@@ -11,22 +11,30 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+import json
+from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# https://jinmay.github.io/2019/10/12/django/django-secret-key-management/
+secret_key = os.path.join(BASE_DIR, 'secret.json')
+with open(secret_key) as f:
+    secrets = json.loads(f.read())
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+def get_env_variable(key):
+    try:
+        return secrets[key]
+    except KeyError:
+        error_msg = f"Set the {key} environment variable"
+        raise ImproperlyConfigured(error_msg)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ibyt6$*8%#)^46-^607l3z#!tm03xn=_2&==mg5ix0hd!u1_e6'
+SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -37,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'myapp.apps.MyappConfig'    #myapp/apps::myAppConfig class
 ]
 
 MIDDLEWARE = [
@@ -75,8 +84,12 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_env_variable("DB_NAME"),
+        'USER' : get_env_variable("DB_USER"),
+        'PASSWORD' : get_env_variable("DB_PASSWORD"),
+        'HOST' : get_env_variable("DB_HOST"),
+        'PORT' : get_env_variable("DB_PORT")
     }
 }
 

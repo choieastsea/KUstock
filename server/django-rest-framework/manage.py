@@ -3,7 +3,9 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+# https://velog.io/@dwenup/M1-Django-mysql-%EC%97%B0%EB%8F%99-error-Did-you-install-mysqlclient
+import pymysql
+pymysql.install_as_MySQLdb()
 
 def main():
     """Run administrative tasks."""

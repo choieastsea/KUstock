@@ -18,7 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('myapp.urls'))
+    path('api/',include('myapp.urls'))
 ]
 
 # 다른 app의 urls.py로 routing 위임해주려면 include함수를 이용할 수 있다.
