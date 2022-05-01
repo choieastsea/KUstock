@@ -15,6 +15,15 @@ from myapp.models import User
 
 # Create your views here.
 # model 객체 이용하여 view에 보여주도록 하자.
+
+def test(request):
+    print(request.META)
+    return JsonResponse({
+        "status" : "200-OK",
+        "room" : request.GET['room'],
+        "id" : request.GET['id'],
+        "msg" : request.GET['msg'],
+        })
 def index(request):
     return HttpResponse('''
     <html>
