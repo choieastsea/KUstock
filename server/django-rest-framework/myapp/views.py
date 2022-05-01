@@ -24,20 +24,6 @@ def test(request):
         "id" : request.GET['id'],
         "msg" : request.GET['msg'],
         })
-def index(request):
-    return HttpResponse('''
-    <html>
-    <body>
-        <h1>Django</h1>
-        <ol>
-            <li>routing</li>
-            <li>view</li>
-            <li>model</li>
-        </ol>
-        <h2>Welcome</h2>
-    </body>
-    </html>
-    ''')
 def createUser(request):
     if request.method == 'GET':
         gid = int(request.GET['gid'])
@@ -50,5 +36,3 @@ def createUser(request):
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
-def read(request, id):
-    return HttpResponse('Read..!'+id)

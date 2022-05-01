@@ -5,8 +5,6 @@ from django.urls import path
 from myapp import views
 
 urlpatterns = [
-    path('', views.index),
-    path('user/',views.createUser),
     path('read/<id>/',views.read),   #id는 바뀌는 값으로 들어가게 됨
     path('test',views.test) # msg 그대로 전송
 ]
