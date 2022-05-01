@@ -1,5 +1,11 @@
-improtClass(org.jsoup.Jsoup);
+importClass(org.jsoup.Jsoup);
 const scriptName = "test";
+
+var map = new Map([
+  ["/test",true],
+  ["/help",true]
+])
+
 /**
  * (string) room
  * (string) sender
@@ -18,14 +24,16 @@ function response(
   imageDB,
   packageName
 ) {
-  var str = msg.trim()[0];
-  if(str=="/"){
-    replier.reply("테스트!");
-    //var data = Utils.parse("https://great-puma-70.loca.lt/test?room="+room+"&id="+sender+"&msg="+msg);
-    //data = data.select("h1").text();
-    var connect = Jsoup.connect("https://young-masks-look-58-225-47-121.loca.lt/api/test?room="+room+"&id="+sender+"&msg="+msg).header("content-type", "application/json;charset=UTF-8");
-    var str = connect.ignoreContentType(true).get().text();
-    replier.reply("data: " + str);
+  var check = msg.trim()[0];
+  if(check=="/"){
+    var order = msg.split(" ")[0];
+    if(map.get(order)){
+      replier.reply("테스트!");
+      //var connect = Jsoup.connect("https://young-masks-look-58-225-47-121.loca.lt/api/test?room="+room+"&id="+sender+"&msg="+msg).header("content-type", "application/json;charset=UTF-8");
+      var connect = Jsoup.connect("https://young-masks-look-58-225-47-121.loca.lt/api"+order+"?room="+room+"&id="+sender+"&msg="+msg).header("content-type", "application/json;charset=UTF-8");
+      var str = connect.ignoreContentType(true).get().text();
+      replier.reply("data: " + str);
+    }
   }
 }
 
