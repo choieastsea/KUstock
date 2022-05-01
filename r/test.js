@@ -20,9 +20,11 @@ function response(
   var str = msg.trim()[0];
   if(str=="/"){
     replier.reply("테스트!");
-    var data = Utils.parse("https://great-puma-70.loca.lt/test?id="+sender+"&msg="+msg);
-    data = data.select("h1").text();
-    replier.reply("data: " + data);
+    //var data = Utils.parse("https://great-puma-70.loca.lt/test?room="+room+"&id="+sender+"&msg="+msg);
+    //data = data.select("h1").text();
+    var connect = Jsoup.connect("https://great-puma-70.loca.lt/api/test/room="+room+"&id="+sender+"&msg="+msg);
+    var str = connect.ignoreContentType(true).get().text();
+    replier.reply("data: " + str);
   }
 }
 
