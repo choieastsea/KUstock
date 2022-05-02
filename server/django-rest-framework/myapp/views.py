@@ -38,7 +38,7 @@ def createUser(request):
         return HttpResponse('post Create!!')
 def help(request):
     req_str = request.GET['msg'].split(' ')
-    if req_str.size == 1:
+    if req_str.size() == 1:
         return JsonResponse({
             "data" : "명령어는 /로 시작하며 앞으로 나오는 "+
             "<,> 는 실제로 입력하지 않고 사용합니다.\n"+
@@ -68,6 +68,30 @@ def help(request):
 
             })
         elif req_str[1] == "alarm":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "theme":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "stock":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "function":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "count":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "user":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "time":
             return JsonResponse({
 
             })
