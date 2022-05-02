@@ -4,7 +4,7 @@ const scriptName = "test";
 var map = new Map([
   ["/test",true],
   ["/help",true]
-])
+]);
 
 /**
  * (string) room
@@ -29,10 +29,14 @@ function response(
     var order = msg.split(" ")[0];
     if(map.get(order)){
       replier.reply("테스트!");
+      var url = "https://old-laws-act-210-106-232-56.loca.lt";
+      var room_b = room;
+      var sender_b = sender;
+      var msg_b = msg;
       //var connect = Jsoup.connect("https://young-masks-look-58-225-47-121.loca.lt/api/test?room="+room+"&id="+sender+"&msg="+msg).header("content-type", "application/json;charset=UTF-8");
-      var connect = Jsoup.connect("https://young-masks-look-58-225-47-121.loca.lt/api"+order+"?room="+room+"&id="+sender+"&msg="+msg).header("content-type", "application/json;charset=UTF-8");
-      var str = connect.ignoreContentType(true).get().text();
-      replier.reply("data: " + str);
+      var connect = Jsoup.connect(url+"/api"+order+"?room="+room_b+"&id="+sender_b+"&msg="+msg_b)
+      var str = JSON.parse(connect.ignoreContentType(true).get().text());
+      replier.reply(str.data);
     }
   }
 }
