@@ -37,15 +37,37 @@ def createUser(request):
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
 def help(request):
-    return JsonResponse({
-        "data" : "명령어는 /로 시작하며 앞으로 나오는 "+
-        "<,> 는 실제로 입력하지 않고 사용합니다.\n"+
-        "help <function/term> : 'function'의 명령어를 출력합니다."+
-        "'term'의 용어가 해당하는 의미/사용가능한 문자열을 출력합니다.\n"+
-        "trading : 모의 매수/매도를 위한 명령어입니다.\n"+
-        "community : 사용자 랭킹 및 자산정보관련 명령어입니다.\n"+
-        "trade : 주식으로 사고/팔때 사용하는 명령어입니다.\n"+
-        "stock : 주식관련 정보를 요청하는 명령어입니다.\n"+
-        "chart : 주식의 차트를 요청하는 명령어입니다.\n"+
-        "alarm : 지정한 시각에 알림을 설정하는 명령어입니다.\n"
-    })
+    req_str = request.GET['msg'].split(' ')
+    if req_str.size == 1:
+        return JsonResponse({
+            "data" : "명령어는 /로 시작하며 앞으로 나오는 "+
+            "<,> 는 실제로 입력하지 않고 사용합니다.\n"+
+            "help <function/term> : 'function'의 명령어를 출력합니다."+
+            "'term'의 용어가 해당하는 의미/사용가능한 문자열을 출력합니다.\n"+
+            "community : 사용자 랭킹 및 자산정보관련 명령어입니다.\n"+
+            "trade : 주식으로 사고/팔때 사용하는 명령어입니다.\n"+
+            "stock : 주식관련 정보를 요청하는 명령어입니다.\n"+
+            "chart : 주식의 차트를 요청하는 명령어입니다.\n"+
+            "alarm : 지정한 시각에 알림을 설정하는 명령어입니다.\n"
+        })
+    else:
+        if req_str[1] == "trade":
+            return JsonResponse({
+                
+            })
+        elif req_str[1] == "community":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "stock":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "chart":
+            return JsonResponse({
+
+            })
+        elif req_str[1] == "alarm":
+            return JsonResponse({
+
+            })
