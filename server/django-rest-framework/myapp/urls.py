@@ -6,6 +6,7 @@ from myapp import views
 
 urlpatterns = [
     path('test',views.test), # msg 그대로 전송
-    path('help',views.help) # /help 명령어 수행
+    path('help',views.help), # /help 명령어 수행
+    path('buy', views.buy)
 ]
 

@@ -7,6 +7,8 @@ from rest_framework import serializers, viewsets
 #models import
 from myapp import models
 from myapp.models import User
+from myapp.assist import assist
+from myapp.api import getStockPrice
 
 # class UserSerializer(serializers.ModelSerializer):
 #     """User Model Serializer"""
@@ -41,6 +43,30 @@ def createUser(request):
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
+def buy(request):
+    #room, id, msg
+    [success, uname, stock_code, count] = assist.parseBuy(request.GET['msg'])
+    return_string = ""
+    # 사용자 조회 
+    if success:
+        user = User.objects.filter(uname=uname)
+        if user.count() != 1:
+            return_string = "해당하는 사용자가 없습니다"
+        else:
+            # 사용자 잔고 조회
+            user = user.first()
+            # print(user.seed)
+            #코드 조회
+            price = getStockPrice(stock_code)
+            user.seed -= int(price)*count
+            if user.seed >= 0:
+                user.save()
+                return_string = f"{user.uname}님 {stock_code} 주식 {count} 개 매수 완료. 잔고 : {user.seed}"
+            else:
+                return_string = "잔고가 부족하여 거래를 하지 못하였습니다"
+    print(return_string)
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
+
 def help(request):
     req_str = request.GET['msg'].split(' ')
     if len(req_str) == 1:
@@ -112,3 +138,4 @@ def help(request):
             return JsonResponse({
                 "data" : "시간을 뜻합니다. 입력할 때, xx:xx (x는 0~9의 자연수)의 형태로 입력하며, 24시간제 형태로 입력합니다."
             })
+
