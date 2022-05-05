@@ -2,6 +2,7 @@
 1. 가상 환경 구축(venv) : django-restframework 디렉토리에서 아래의 것들을 해주자.
 `python -m venv project_env`
 `source project_env/bin/activate` 로 가상 환경 활성화 -> `deactivate`로 비활성화 할 수 있음
+윈도우에서는 `cd project_env/Scripts`로 접근하여 `activate`실행해야함!
 `pip install -r requirements.txt`로 의존성 패키지 설치
 
 2. 장고 서버 실행 
