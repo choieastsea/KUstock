@@ -54,14 +54,18 @@ http://localhost:8000/api/test?room=테스트&id=테스터&msg=/test
 
 /help 테스트
 http://localhost:8000/api/help?room=테스트&id=테스터&msg=/help
+
 http://localhost:8000/api/help?room=테스트&id=테스터&msg=/help user
 
 /trade 테스트
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade buy 삼성 10
+
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼성 10
+
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼성 십
 
 /community 테스트
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community rank
+
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community 테스터
 
