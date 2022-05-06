@@ -53,12 +53,16 @@ def createUser(request):
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
-def buy(request):
-    #room, id, msg
-    [success, uname, stock_code, count] = assist.parseBuy(request.GET['msg'])
+def trade(request):
+    # room, id 인자 획득
+    uroom = request.GET["id"]
+    uname = request.GET["room"]
+    # msg에서 명령어 파싱
+    [success, stock_code, count] = assist.parseTrade(request.GET['msg'])
+
     return_string = ""
     # 사용자 조회 
-    if success:
+    if success == "buy":
         user = User.objects.filter(uname=uname)
         if user.count() != 1:
             return_string = "해당하는 사용자가 없습니다"
@@ -74,6 +78,13 @@ def buy(request):
                 return_string = f"{user.uname}님 {stock_code} 주식 {count} 개 매수 완료. 잔고 : {user.seed}"
             else:
                 return_string = "잔고가 부족하여 거래를 하지 못하였습니다"
+    elif success == "sell":
+        user = User.objects.filter(uname=uname)
+        if user.count() != 1:
+            return_string = "해당하는 사용자가 없습니다"
+    else:
+        return_string = success
+
     print(return_string)
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 

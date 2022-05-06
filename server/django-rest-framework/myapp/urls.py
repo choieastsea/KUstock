@@ -7,7 +7,7 @@ from myapp import views
 urlpatterns = [
     path('test',views.test), # msg 그대로 전송
     path('help',views.help), # /help 명령어 수행
-    path('buy', views.buy),
+    path('trade', views.trade),
     path('check', views.check)  #김혁진 추가 나중에 빼야됨.
 ]
 

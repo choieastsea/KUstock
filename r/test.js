@@ -3,7 +3,8 @@ const scriptName = "test";
 
 var map = new Map([
   ["/test",true],
-  ["/help",true]
+  ["/help",true],
+  ["/trade",true]
 ]);
 
 /**
@@ -33,6 +34,8 @@ function response(
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text());
       replier.reply(str.data);
+    }else{
+      replier.reply("등록되지않은 명령어입니다.");
     }
   }
 }
