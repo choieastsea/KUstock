@@ -49,6 +49,7 @@ prompt의 맨앞이 해당 가상환경의 이름으로 바뀌면 실행완료. 
 4. 웹 브라우저에 127.0.0.1:포트/api/check실행 했을때, prompt에 연결성공이라고 나오면 성공~
 
 # 테스트 url 문구
+```
 기본 테스트
 
 http://localhost:8000/api/test?room=테스트&id=테스터&msg=/test
@@ -72,4 +73,6 @@ http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼�
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community rank
 
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community 테스터
+
+```
 
