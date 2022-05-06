@@ -50,14 +50,17 @@ prompt의 맨앞이 해당 가상환경의 이름으로 바뀌면 실행완료. 
 
 # 테스트 url 문구
 기본 테스트
+
 http://localhost:8000/api/test?room=테스트&id=테스터&msg=/test
 
 /help 테스트
+
 http://localhost:8000/api/help?room=테스트&id=테스터&msg=/help
 
 http://localhost:8000/api/help?room=테스트&id=테스터&msg=/help user
 
 /trade 테스트
+
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade buy 삼성 10
 
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼성 10
@@ -65,6 +68,7 @@ http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼�
 http://localhost:8000/api/trade?room=테스트&id=테스터&msg=/trade sell 삼성 십
 
 /community 테스트
+
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community rank
 
 http://localhost:8000/api/community?room=테스트&id=테스터&msg=/community 테스터
