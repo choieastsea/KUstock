@@ -1,8 +1,12 @@
 from dataclasses import field
+from http.client import HTTPResponse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, HttpResponse
 from urllib import parse
+from .check import *
 from rest_framework import serializers, viewsets
+from pathlib import Path
+import os
 
 #models import
 from myapp import models
@@ -18,6 +22,12 @@ from myapp.api import getStockPrice
 
 # Create your views here.
 # model 객체 이용하여 view에 보여주도록 하자.
+
+def check(request):
+    creon = Creon()
+    return JsonResponse({
+                
+            })
 
 def test(request):
     print(request.META)

@@ -35,3 +35,15 @@
 
 project(myproject)가 있고, app(myapp)이 있다. `project`는 전체 서비스에 대한 것이고, `app`은 기능에 대한 것이다. url을 통하여 오는 요청에 대하여 처리하여 결과를 보내는 서버 프로그램에서, 사용자의 모든 경로는 urls.py를 통하여 이에 적당한 app에 위임이 될 것이다. app 내에서 urls.py에서 view와 매칭을 하여 응답을 하는 형식이라고 보면 될 것 같다. view는 model에 따라 보이는 것이 달라질 수 있다. (model은 db에서 가져온 값을 직렬화하여 객체로써 갖고 있는다)
 
+
+# 서버 api 연동 확인
+
+1. anaconda에 가상환경 32bit interpreter 설치(참고: https://baessi.tistory.com/125)
+
+2. 가상환경이 생성된 후 anaconda prompt를 관리자 권한으로 실행, `activate '가상환경 이름'`으로 가상환경 실행.
+prompt의 맨앞이 해당 가상환경의 이름으로 바뀌면 실행완료. ex) (base) --> (creaon32)
+가상환경이 실행되고 32bit임을 확인. `python`, `import platform` 후 `platform.architecture()`했을시 32BIT라고 나오면 됨. 
+
+3. 가상환경의 경로를 Django서버 실행 코드가 있는 위치로 바꿔주고, python manage.py runserver로 실행.
+
+4. 웹 브라우저에 127.0.0.1:포트/api/check실행 했을때, prompt에 연결성공이라고 나오면 성공~
