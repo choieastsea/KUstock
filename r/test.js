@@ -4,7 +4,8 @@ const scriptName = "test";
 var map = new Map([
   ["/test",true],
   ["/help",true],
-  ["/trade",true]
+  ["/trade",true],
+  ["/community",true]
 ]);
 
 /**
@@ -30,10 +31,11 @@ function response(
     var order = msg.split(" ")[0];
     if(map.get(order)){
       replier.reply("테스트!");
-      var url = "https://old-laws-act-210-106-232-56.loca.lt";
+      var url = "https://tricky-berries-tie-121-124-42-134.loca.lt";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text());
-      replier.reply(str.data);
+      //replier.reply(str.data);
+      replier.reply(str);
     }else{
       replier.reply("등록되지않은 명령어입니다.");
     }

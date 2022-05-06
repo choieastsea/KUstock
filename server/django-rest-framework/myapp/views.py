@@ -60,6 +60,9 @@ def trade(request):
     # msg에서 명령어 파싱
     [success, stock_code, count] = assist.parseTrade(request.GET['msg'])
 
+    # 파싱 테이스
+    print("success:"+ success+", stock_code:"+str(stock_code)+", count:"+ str(count))
+
     return_string = ""
     # 사용자 조회 
     if success == "buy":
@@ -87,6 +90,25 @@ def trade(request):
 
     print(return_string)
     return JsonResponse({"status" : "200-OK", "data" : return_string})
+
+def community(request):
+    # room, id 인자 획득
+    uroom = request.GET["id"]
+    uname = request.GET["room"]
+    [success, req_uname] = assist.parseCommunity(request.GET['msg'])
+
+    # 파싱 테스트
+    print("success:"+ success+", req_uname:"+req_uname)
+
+    return_string = ""
+    if success == "rank":
+        return_string = "순위표"
+    elif success == "user":
+        retunr_string = "유저 정보"
+    else:
+        return_string = success
+
+    return JsonResponse({"status" : "200-ok", "data" : return_string})
 
 def help(request):
     req_str = request.GET['msg'].split(' ')

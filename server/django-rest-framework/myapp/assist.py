@@ -18,17 +18,36 @@ class assist:
                 success += "/trade buy 혹은 /trade sell 로 시작하였는지 확인해주세요.\n"
         else:
             success += "/trade (buy/sell) <stock> <count> 의 형태로 입력되었는지 확인해주세요.\n"
+            return [success, 0, 0]
 
         # <stock> 인자 확인
         # 주식 코드 받아오는 메소드 필요
         stock_code = msg_split[2]
 
+        count = 0
         # <count> 인자 확인
         try:
-            count = int(msg_split[4])
+            count = int(msg_split[3])
         except:
+            success = ""
             success += "<count>에 자연수를 입력해주세요.\n"
 
-        
-
         return [success, stock_code, count]
+
+
+    def parseCommunity(msg):
+        msg_split = msg.split(" ")
+        success = ""
+        req_user = ""
+        if len(msg_split) == 2:
+            if msg_split[1] == "rank":
+                success = "rank"
+            else:
+                # 해당 user가 존재하는지 확인하는 메소드 필요
+                req_user = msg_split[1]
+                success = "user"
+        else:
+            success = "/community rank 혹은 /community <user> 형태로 입력되었는지 확인해주세요.\n"
+
+
+        return [success, req_user]
