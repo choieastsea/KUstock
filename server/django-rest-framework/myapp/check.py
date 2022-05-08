@@ -1,3 +1,4 @@
+import enum
 import sys
 import win32com.client
 import threading
@@ -14,7 +15,23 @@ class Creon:
             exit()
         else:
             print("ok")
+
+    def getCode(self):
+        self.objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
+        codeList = self.objCpCodeMgr.GetStockListByMarket(1)     #거래소
+        codeList2 = self.objCpCodeMgr.GetStockListByMarket(2)     #코스닥
         
+        codename_lst = []
+        for i, code in enumerate(codeList):
+            name = self.objCpCodeMgr.CodeToName(code)
+            codename_lst.append([code, name])
+
+        for i, code in enumerate(codeList2):
+            name = self.objCpCodeMgr.CodeToName(code)
+            codename_lst.append([code, name])
+        print(codename_lst) 
+        return codename_lst
+        """
         self.objStockMst = win32com.client.Dispatch("DsCbo1.StockMst")
         self.objStockMst.SetInputValue(0, 'A005930')   #종목 코드 - 삼성전자
         self.objStockMst.BlockRequest()
@@ -72,3 +89,5 @@ class Creon:
         print("예상체결가", exPrice)
         print("예상체결가 대비", exDiff)
         print("예상체결수량", exVol)
+        """
+        

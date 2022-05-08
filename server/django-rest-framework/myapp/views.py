@@ -27,6 +27,7 @@ from myapp.api import getStockPrice
 
 def check(request):
     creon = Creon()
+    lst = creon.getCode()
     return JsonResponse({
                 
             })
