@@ -6,12 +6,14 @@ from urllib import parse
 from .check import *
 from rest_framework import serializers, viewsets
 from pathlib import Path
+from datetime import datetime
 import os
 
 #models import
 from myapp import models
 from myapp.models import User
 from myapp.assist import assist
+from myapp.models import Trade
 from myapp.api import getStockPrice
 
 # class UserSerializer(serializers.ModelSerializer):
@@ -55,13 +57,15 @@ def createUser(request):
         return HttpResponse('post Create!!')
 def trade(request):
     # room, id 인자 획득
-    uroom = request.GET["id"]
-    uname = request.GET["room"]
+    uname = request.GET["id"]
+    # uname = "김경호"
+    uroom = request.GET["room"]
+    # uroom = "1"
     # msg에서 명령어 파싱
     [success, stock_code, count] = assist.parseTrade(request.GET['msg'])
-
+    # [success, stock_code, count] = ["buy","000020",2]
     # 파싱 테이스
-    print("success:"+ success+", stock_code:"+str(stock_code)+", count:"+ str(count))
+    print("success:"+ success+", stock_code : "+str(stock_code)+", count:"+ str(count))
 
     return_string = ""
     # 사용자 조회 
@@ -69,6 +73,12 @@ def trade(request):
         user = User.objects.filter(uname=uname)
         if user.count() != 1:
             return_string = "해당하는 사용자가 없습니다"
+        # elif:
+        # 해당하는 room이 없는 경우
+        # elif:
+        # 동명이인인 경우
+        # elif:
+        # 해당하는 주식이 없는 경우
         else:
             # 사용자 잔고 조회
             user = user.first()
@@ -78,13 +88,39 @@ def trade(request):
             user.seed -= int(price)*count
             if user.seed >= 0:
                 user.save()
-                return_string = f"{user.uname}님 {stock_code} 주식 {count} 개 매수 완료. 잔고 : {user.seed}"
+                Trade.objects.create(
+                    uid=user,
+                    buysell=True,
+                    date=datetime.today(),
+                    price=price,
+                    count=count,
+                    code=stock_code)
+                # print(Trade.objects.filter(uid=User))
+                return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
             else:
                 return_string = "잔고가 부족하여 거래를 하지 못하였습니다"
     elif success == "sell":
         user = User.objects.filter(uname=uname)
         if user.count() != 1:
             return_string = "해당하는 사용자가 없습니다"
+        # elif:
+        # 해당하는 room이 없는 경우
+        # elif:
+        # 동명이인인 경우
+        # elif:
+        # 해당하는 주식이 없는 경우
+        else:
+            user = user.first()
+            price = getStockPrice(stock_code)
+            user.seed+=int(price)*count
+            Trade.objects.create(
+                    uid=user,
+                    buysell=False,
+                    date=datetime.today(),
+                    price=price,
+                    count=count,
+                    code=stock_code)
+            return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"
     else:
         return_string = success
 
