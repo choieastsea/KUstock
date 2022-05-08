@@ -56,11 +56,21 @@ def createUser(request):
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
 def trade(request):
+    """
+    test url : {root url}/api/trade?id=김태헌&room=1&msg=/trade buy 005980 2 (trade buy/sell stock_code count)
+    ----[check list]----
+    - 문자열 올바르지 않은 경우
+    - 해당 이름 이용자 존재하지 않을 경우
+    - 해당 room 존재하지 않을 경우
+    - 해당 종목 코드가 존재하지 않는 경우
+    - count가 음수인 경우
+    - (buy) seed가 부족한 경우
+    - (sell) 가지고 있는 주식이 count 보다 적은 경우
+    - 정상 거래 진행
+    """
     # room, id 인자 획득
     uname = request.GET["id"]
-    # uname = "김경호"
     uroom = request.GET["room"]
-    # uroom = "1"
     # msg에서 명령어 파싱
     [success, stock_code, count] = assist.parseTrade(request.GET['msg'])
     # [success, stock_code, count] = ["buy","000020",2]
@@ -72,7 +82,7 @@ def trade(request):
     if success == "buy":
         user = User.objects.filter(uname=uname)
         if user.count() != 1:
-            return_string = "해당하는 사용자가 없습니다"
+            return_string = f"{uname}에 해당하는 사용자가 없습니다"
         # elif:
         # 해당하는 room이 없는 경우
         # elif:
@@ -85,20 +95,23 @@ def trade(request):
             # print(user.seed)
             #코드 조회
             price = getStockPrice(stock_code)
-            user.seed -= int(price)*count
-            if user.seed >= 0:
-                user.save()
-                Trade.objects.create(
-                    uid=user,
-                    buysell=True,
-                    date=datetime.today(),
-                    price=price,
-                    count=count,
-                    code=stock_code)
-                # print(Trade.objects.filter(uid=User))
-                return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
-            else:
-                return_string = "잔고가 부족하여 거래를 하지 못하였습니다"
+            if price == -1:
+                return_string = f"{stock_code}에 해당하는 종목이 없습니다"
+            else:    
+                user.seed -= int(price)*count
+                if user.seed >= 0:
+                    user.save()
+                    Trade.objects.create(
+                        uid=user,
+                        buysell=True,
+                        date=datetime.today(),
+                        price=price,
+                        count=count,
+                        code=stock_code)
+                    # print(Trade.objects.filter(uid=User))
+                    return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
+                else:
+                    return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
     elif success == "sell":
         user = User.objects.filter(uname=uname)
         if user.count() != 1:
@@ -112,35 +125,94 @@ def trade(request):
         else:
             user = user.first()
             price = getStockPrice(stock_code)
-            user.seed+=int(price)*count
-            Trade.objects.create(
-                    uid=user,
-                    buysell=False,
-                    date=datetime.today(),
-                    price=price,
-                    count=count,
-                    code=stock_code)
-            return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"
+            if price == -1:
+                return_string = f"{stock_code}에 해당하는 종목이 없습니다"
+            else:
+                trades = Trade.objects.filter(uid = user.uid, code = stock_code)
+                current_stock_count = 0
+                for trade in trades:
+                    if trade.buysell=="TRUE":
+                        current_stock_count += trade.count
+                    else:
+                        current_stock_count -= trade.count
+                    
+                print(current_stock_count)
+                if current_stock_count<count:
+                    # trade에 buy한 내역이 없는 경우 
+                    return_string = f"{stock_code} 종목을 {count}주 이상 소유하고 있지 않습니다"
+                else:
+                    # 정상 매도 case
+                    user.seed+=int(price)*count
+                    Trade.objects.create(
+                            uid=user,
+                            buysell=False,
+                            date=datetime.today(),
+                            price=price,
+                            count=count,
+                            code=stock_code)
+                    return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
     else:
         return_string = success
-
     print(return_string)
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
 def community(request):
     # room, id 인자 획득
-    uroom = request.GET["id"]
-    uname = request.GET["room"]
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
     [success, req_uname] = assist.parseCommunity(request.GET['msg'])
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)
-
+    # my_price = 124400 # 내가 구매한 주식 가격
+    # cu_price = 135200 # 현재 주식 가격
+    # my_cnt = 34 # 내가 구매한 주식 숫자
+    # profit_rate = (cu_price-my_price)/my_price*100 #수익률
+    # proceeds = my_price*profit_rate*my_cnt #수익금
+    trades = Trade.objects.all()
+    for trade in trades:
+        print(f" tid number : {trade.tid}\n uid number : {trade.uid.uname}\n date : {trade.date}\n price : {trade.price}\n count : {trade.count}\n buysell : {trade.buysell}\n code : {trade.code}\n")
+        # print(f"{us.uid}\n {us.gid}\n {us.uname}\n {us.seed}")
     return_string = ""
     if success == "rank":
-        return_string = "순위표"
-    elif success == "user":
-        retunr_string = "유저 정보"
+        temp=""
+        temp+="           랭킹\n"
+        temp+="=============================\n"
+        temp+="( 순위 / 이름 / 수익률 / 수익금 )\n"
+        # 해당 uroom에 있는 모든 사람들의 정보.
+        names = User.objects.all
+        for i in range(len(names)):
+            temp+=f"{i+1}. {names[i] }"
+        print(temp)
+        return_string = temp
+    elif success=="user":
+        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
+        total_buy=0
+        proceeds_rate=0
+        proceeds=0
+        table=[]
+        for trade in trades:
+            if trade.uid.uname==req_uname:
+                if trade.buysell: #buy인 경우
+                    total_buy_cnt+=trade.count
+                    total_buy+=(trade.price*trade.count)
+                    table.append(f" {trade.code} / {proceeds} ({proceeds_rate}) / {trade.price} / {trade.count}")
+                elif not trade.buysell: #sell인 경우
+                    #print(f"현재 {req_uname}의 seed : {trade.uid.seed} price: {trade.price}")
+                    avg_buy = total_buy/total_buy_cnt
+                    proceeds_rate = (proceeds_rate+(avg_buy-trade.price)/trade.price)/2
+                    proceeds += (avg_buy-trade.price)*trade.count #수익금(마이너스도 가능)
+                    table.append(f" {trade.code} / {proceeds} ({proceeds_rate}) / {trade.price} / {trade.count}")
+        temp="          "
+        temp+=req_uname
+        temp+=" 님의 자산 정보입니다.\n"
+        temp+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
+        temp+="===========================================================\n"
+        # temp+="가지고 있는 종목 정보"
+        for t in table:
+            temp+=t
+        print(temp)
+        return_string = temp
     else:
         return_string = success
 
