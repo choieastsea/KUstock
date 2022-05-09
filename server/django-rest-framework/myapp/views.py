@@ -191,41 +191,21 @@ def community(request):
         temp=""
         temp+="           랭킹\n"
         temp+="=============================\n"
-        temp+="( 순위 / 이름 / 수익률 / 수익금 )\n"
+        temp+="( 순위 / 이름 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
         names = User.objects.all()
-        i=0
         tmembers=[]
-        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
-        total_buy=0
         for name in names:
-            total_buy=0
-            total_count=0
-            for trade in jusiks:
-                if trade.buysell=="TRUE": #매수 기록
-                    total_buy+=trade.price*trade.count
-                    total_count += trade.count
-                elif trade.buysell=="FALSE": #매도 기록
-                    total_buy-=-trade.price*trade.count
-                    total_count -= trade.count
-            avg_buy = total_buy/total_count
-            current_price = 1000 # 현재가 받아오는 메소드
-            temp = (current_price-avg_buy)/avg_buy
-            tmembers.append([name.uname,temp,name.profit])
-        tmembers=sorted(tmembers,key=lambda x:x[2])
+            tmembers.append([name.uname,name.profit])
+        tmembers=sorted(tmembers,key=lambda x:x[1])
         i=0
-        temp="( "
         for tmember in tmembers:
-            temp+=(i+1)
-            temp+=f" / {tmember[0]} / {tmember[1]} / {tmember[2]} )\n"
+            temp+=f"{i+1}"
+            temp+=f" / {tmember[0]} / {tmember[1]}  )\n"
         print(temp)
         return_string = temp
     elif success=="user":
-        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
         total_buy=0
-        proceeds_rate=0
-        proceeds=0
-        user = User.objects.filter(uname=req_uname)
         jusik_table = []
         jusiks=""
         for trade in trades:
@@ -265,6 +245,7 @@ def community(request):
         return_string = success
 
     return JsonResponse({"status" : "200-ok", "data" : return_string})
+
 
 def help(request):
     req_str = request.GET['msg'].split(' ')
