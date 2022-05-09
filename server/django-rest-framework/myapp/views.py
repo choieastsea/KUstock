@@ -28,7 +28,8 @@ def check(request):
     creon = Creon()
     it = creon.getCurPrice()
     return JsonResponse({
-                
+               "status" : "200-OK",
+               "data": it 
             })
 
 def test(request):
