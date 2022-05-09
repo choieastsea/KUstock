@@ -260,7 +260,7 @@ def community(request):
                     if (current_price-avg_buy)/avg_buy*100<0:
                         temp+="0) / "
                     else:
-                        temp += str(int((current_price-avg_buy)/avg_buy*100)) + "% / "
+                        temp += str(int((current_price-avg_buy)/avg_buy*100)) + "%) / "
                 temp+=str(current_price)+"원 / "
                 temp+=str(total_count) + "개 ) \n"
                 print(temp)
