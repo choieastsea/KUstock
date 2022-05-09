@@ -13,6 +13,7 @@ class assist:
             print("해당하는 종목명 없음")
             return -1
         else:
+            stock = stock.first()
             print(f"<<assist::codeToword>> : return: {stock.sname}")
             return stock.sname
 
@@ -27,6 +28,7 @@ class assist:
             print("해당하는 stock code 없음")
             return -1
         else:
+            stock = stock.first()
             print(f"<<assist::codeToword>> : return: {stock.code}")
             return stock.code
 

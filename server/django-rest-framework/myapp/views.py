@@ -96,10 +96,9 @@ def trade(request):
             user = user.first()
             # print(user.seed)
             #코드 조회
-            price = getStockPrice(stock_code)
-            price = 1000
+            price = getStockPrice(stock_code[1:])
             if price == -1:
-                return_string = f"{stock_code}에 해당하는 종목이 없습니다"
+                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다"
             else:    
                 user.seed -= int(price)*count
                 if user.seed >= 0:
@@ -112,7 +111,7 @@ def trade(request):
                         count=count,
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
-                    return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
                 else:
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
@@ -128,10 +127,9 @@ def trade(request):
         # 해당하는 주식이 없는 경우
         else:
             user = user.first()
-            price = getStockPrice(stock_code)
-            price = 1200
+            price = getStockPrice(stock_code[1:])
             if price == -1:
-                return_string = f"{stock_code}에 해당하는 종목이 없습니다"
+                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다"
             else:
                 trades = Trade.objects.filter(uid = user.uid, code = stock_code)
                 current_stock_count = 0
@@ -144,7 +142,7 @@ def trade(request):
                 print(f"현재 남은 주식 개수 : {current_stock_count}")
                 if current_stock_count<count:
                     # trade에 buy한 내역이 없는 경우 
-                    return_string = f"{stock_code} 종목을 {count}주 이상 소유하고 있지 않습니다"
+                    return_string = f"{assist.codeToword(stock_code)} 종목을 {count}주 이상 소유하고 있지 않습니다"
                 else:
                     # 정상 매도 case
                     user.seed+=int(price)*count
@@ -168,7 +166,7 @@ def trade(request):
                             code=stock_code)
                     # User.objects.update()
                     print(user.profit)
-                    return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
     else:
         return_string = success
     print(return_string)
@@ -231,7 +229,7 @@ def community(request):
         for jusik in jusik_table:
             jusiks = Trade.objects.filter(uid=req_user.uid,code=jusik)
             temp+="( "
-            temp+=jusik # 코드명 이름변경 필요
+            temp+=assist.codeToword(jusik) # 코드명 이름변경 필요
             temp+=' / '
             # 평단가 구하는 코드    
             for trade in jusiks:
