@@ -101,8 +101,8 @@ def trade(request):
             if price == -1:
                 return_string = f"{stock_code}에 해당하는 종목이 없습니다"
             else:    
-                user.seed -= int(price)*count
                 if user.seed >= 0:
+                    user.seed -= int(price)*count
                     user.save()
                     Trade.objects.create(
                         uid=user,
