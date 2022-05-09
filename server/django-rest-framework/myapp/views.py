@@ -197,11 +197,12 @@ def community(request):
         tmembers=[]
         for name in names:
             tmembers.append([name.uname,name.profit])
-        tmembers=sorted(tmembers,key=lambda x:x[1])
+        tmembers=sorted(tmembers,key=lambda x:-x[1])
         i=0
         for tmember in tmembers:
             temp+=f"{i+1}"
             temp+=f" / {tmember[0]} / {tmember[1]}  )\n"
+            i+=1
         print(temp)
         return_string = temp
     elif success=="user":
