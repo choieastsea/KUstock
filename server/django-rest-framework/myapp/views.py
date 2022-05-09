@@ -8,7 +8,7 @@ from rest_framework import serializers, viewsets
 from pathlib import Path
 from datetime import datetime
 import os
-
+from myapp.member import Member
 #models import
 from myapp import models
 from myapp.models import User
@@ -50,7 +50,7 @@ def createUser(request):
         seed = int(request.GET['seed'])
         # 유효성 검사 해줄 필요 있음!
         User.objects.create(gid=gid,uname=uname, seed=seed)
-        return JsonResponse({"status" : "200-OK"})
+        return JsonResponse({"status" : "200-OK"},{"data":"사용자 생성 완료"})
     elif request.method == 'POST':
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
@@ -156,6 +156,32 @@ def trade(request):
     print(return_string)
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
+# class Member:
+#     name=""
+#     rank=0
+#     proceed=0
+#     proceed_rate=0
+
+#     def __init__(self,name):
+#         self.name = name
+
+#     def ranking(self):
+#         trades = Trade.objects.all()
+#         total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
+#         total_buy=0
+#         for trade in trades:
+#             if trade.uid.uname==self.name:
+#                 if trade.buysell: #buy인 경우
+#                     total_buy_cnt+=trade.count
+#                     total_buy+=(trade.price*trade.count)
+#                 elif not trade.buysell: #sell인 경우
+#                     avg_buy = total_buy/total_buy_cnt
+#                     self.proceed_rate = (self.proceed_rate+(avg_buy-trade.price)/trade.price)/2
+#                     self.proceed += (avg_buy-trade.price)*trade.count #수익금
+#                     print(f"proceed_rate : {self.proceed_rate} proceed : {self.proceed}")
+#         # return [self.name,self.proceed,self.proceed_rate,self.rank]
+#         return self.proceed
+
 def community(request):
     # room, id 인자 획득
     uname = request.GET["id"]
@@ -170,8 +196,9 @@ def community(request):
     # profit_rate = (cu_price-my_price)/my_price*100 #수익률
     # proceeds = my_price*profit_rate*my_cnt #수익금
     trades = Trade.objects.all()
-    for trade in trades:
-        print(f" tid number : {trade.tid}\n uid number : {trade.uid.uname}\n date : {trade.date}\n price : {trade.price}\n count : {trade.count}\n buysell : {trade.buysell}\n code : {trade.code}\n")
+    
+    #for trade in trades:
+        #print(f" tid number : {trade.tid}\n uid number : {trade.uid.uname}\n date : {trade.date}\n price : {trade.price}\n count : {trade.count}\n buysell : {trade.buysell}\n code : {trade.code}\n")
         # print(f"{us.uid}\n {us.gid}\n {us.uname}\n {us.seed}")
     return_string = ""
     if success == "rank":
@@ -180,9 +207,28 @@ def community(request):
         temp+="=============================\n"
         temp+="( 순위 / 이름 / 수익률 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
-        names = User.objects.all
-        for i in range(len(names)):
-            temp+=f"{i+1}. {names[i] }"
+        names = User.objects.all()
+        i=0
+        tmembers=[]
+        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
+        total_buy=0
+        for name in names:
+            # print(name.uname)
+            tmember = Member(name.uname)
+            for trade in trades:
+                if trade.uid.uname==tmember.name:
+                    if trade.buysell: #buy인 경우
+                        total_buy_cnt+=trade.count
+                        total_buy+=(trade.price*trade.count)
+                    elif not trade.buysell: #sell인 경우
+                        avg_buy = total_buy/total_buy_cnt
+                        tmember.proceed_rate = (tmember.proceed_rate+(avg_buy-trade.price)/trade.price)/2
+                        tmember.proceed += (avg_buy-trade.price)*trade.count #수익금
+                        # print(f"proceed_rate : {self.proceed_rate} proceed : {self.proceed}")
+            tmembers.append(tmember)
+        tmembers.sort(reverse=True)
+        for tmember in tmembers:
+            temp+=f"{tmember.rank}. {tmember.uname} {tmember.proceed_rate} {tmember.proceed}\n"
         print(temp)
         return_string = temp
     elif success=="user":
@@ -211,6 +257,7 @@ def community(request):
         # temp+="가지고 있는 종목 정보"
         for t in table:
             temp+=t
+            temp+='\n'
         print(temp)
         return_string = temp
     else:
