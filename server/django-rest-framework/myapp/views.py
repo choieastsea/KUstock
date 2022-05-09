@@ -156,6 +156,8 @@ def trade(request):
                             total_buy-=-trade.price*trade.count
                     avg_buy = total_buy/current_stock_count
                     profit = (price-avg_buy)*count
+                    user.profit +=profit
+                    user.save()
                     Trade.objects.create(
                             uid=user,
                             buysell="False",
