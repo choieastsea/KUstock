@@ -48,7 +48,7 @@ class Creon:
         rqRet = self.objStockMst.GetDibMsg1()
         print("통신상태", rqStatus, rqRet)
         if rqStatus != 0:
-            exit()
+            return -2
         
         code = self.objStockMst.GetHeaderValue(0)
         name = self.objStockMst.GetHeaderValue(1)
@@ -56,7 +56,7 @@ class Creon:
         #print("코드 : " + code)
         #print("이름 : "+ name)
         #print("시가 : " +str(price))
-        if price==0:
+        if price ==0:
             return -1
         else:
             return price
