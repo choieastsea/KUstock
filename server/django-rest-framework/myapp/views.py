@@ -212,7 +212,7 @@ def community(request):
         for trade in trades:
             if trade.uid.uname==req_uname:
                 if trade.code not in jusik_table:
-                    jusik_table.append(jusik_table)
+                    jusik_table.append(trade.code)
         temp="          "
         temp+=req_uname
         temp+=" 님의 자산 정보입니다.\n"
