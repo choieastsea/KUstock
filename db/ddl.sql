@@ -1,3 +1,4 @@
+drop database kustock;
 create database kustock;
 use kustock;
 -- user
@@ -5,7 +6,8 @@ CREATE TABLE user (
    uid INTEGER NOT NULL,
    gid INTEGER NOT NULL,
    uname VARCHAR(50) NOT NULL,
-   seed INTEGER NOT NULL
+   seed INTEGER NOT NULL,
+   profit INTEGER NOT NULL
 );
 
 -- user
@@ -26,7 +28,7 @@ CREATE TABLE trade (
    price INTEGER NOT NULL,
    count INTEGER NOT NULL,
    buysell ENUM('TRUE','FALSE') NOT NULL,
-   code INTEGER NOT NULL
+   code CHAR(7) NOT NULL
 );
 
 -- trade
@@ -44,7 +46,7 @@ ALTER TABLE trade
 CREATE TABLE alarm (
    aid INTEGER NOT NULL,
    uid INTEGER NOT NULL,
-   code INTEGER NOT NULL,
+   code CHAR(7) NOT NULL,
    time TIME NOT NULL,
    onoff ENUM('TRUE','FALSE') NOT NULL
 );
@@ -62,7 +64,7 @@ ALTER TABLE alarm
 
 -- 새 테이블
 CREATE TABLE stock (
-   code INTEGER NOT NULL,
+   code CHAR(7) NOT NULL,
    sname VARCHAR(50) NOT NULL
 );
 
@@ -85,4 +87,3 @@ ALTER TABLE alarm
    REFERENCES user ( -- user
    uid -- uid
    );
-   

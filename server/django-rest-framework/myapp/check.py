@@ -16,6 +16,12 @@ class Creon:
         else:
             print("ok")
 
+    """def connect(self, id_, pwd, pwdcert , trycnt=300):
+        if not self.connected()
+
+    def connected(self):
+        bConnected = self.objCpc
+        """
     def getCode(self):
         self.objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
         codeList = self.objCpCodeMgr.GetStockListByMarket(1)     #거래소
@@ -42,7 +48,7 @@ class Creon:
         rqRet = self.objStockMst.GetDibMsg1()
         print("통신상태", rqStatus, rqRet)
         if rqStatus != 0:
-            exit()
+            return -2
         
         code = self.objStockMst.GetHeaderValue(0)
         name = self.objStockMst.GetHeaderValue(1)
@@ -50,5 +56,9 @@ class Creon:
         #print("코드 : " + code)
         #print("이름 : "+ name)
         #print("시가 : " +str(price))
-        return price
-        
+        if price ==0:
+            return -1
+        else:
+            return price
+    
+    
