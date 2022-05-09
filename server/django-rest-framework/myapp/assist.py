@@ -1,3 +1,5 @@
+from myapp.models import Stock
+from myapp.models import User
 # myapp::views.py에 필요한 함수에 대한 파일
 class assist:
     def parseTrade(msg):
@@ -15,22 +17,24 @@ class assist:
             elif msg_split[1] == "sell":
                 success = "sell"
             else:
-                success += "/trade buy 혹은 /trade sell 로 시작하였는지 확인해주세요.\n"
+                success = "/trade buy 혹은 /trade sell 로 시작하였는지 확인해주세요.\n"
         else:
-            success += "/trade (buy/sell) <stock> <count> 의 형태로 입력되었는지 확인해주세요.\n"
+            success = "/trade (buy/sell) <stock> <count> 의 형태로 입력되었는지 확인해주세요.\n"
             return [success, 0, 0]
 
         # <stock> 인자 확인
         # 주식 코드 받아오는 메소드 필요
-        stock_code = msg_split[2]
-
+        stock_code = Stock.objects.filter(sname=msg_split[2])
+        if stock_code.count() == 1:
+            stock_code = stock_code.first().code
+        else:
+            success = "주식 명을 확인해주세요.\n"
         count = 0
         # <count> 인자 확인
         try:
             count = int(msg_split[3])
         except:
-            success = ""
-            success += "<count>에 자연수를 입력해주세요.\n"
+            success = "<count>에 자연수를 입력해주세요.\n"
 
         return [success, stock_code, count]
 
@@ -44,8 +48,12 @@ class assist:
                 success = "rank"
             else:
                 # 해당 user가 존재하는지 확인하는 메소드 필요
-                req_user = msg_split[1]
-                success = "user"
+                req_user = User.objects.filter(uname=msg_split[1])
+                if req_user.count() == 1:
+                    success = "user"
+                    req_user = req_user.first().uname
+                else:
+                    success = "사용자가 존재하지않습니다.\n"
         else:
             success = "/community rank 혹은 /community <user> 형태로 입력되었는지 확인해주세요.\n"
 
