@@ -137,7 +137,7 @@ class DjangoSession(models.Model):
 
 
 class Stock(models.Model):
-    code = models.CharField(max_length=7)
+    code = models.CharField(max_length=7, primary_key=True)
     sname = models.CharField(max_length=50)
 
     class Meta:
