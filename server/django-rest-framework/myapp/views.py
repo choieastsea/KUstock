@@ -28,7 +28,6 @@ from myapp.models import Stock
 def check(request):
     creon = Creon()
     it = creon.getCurPrice("A005930")
-
     return JsonResponse({
                "status" : "200-OK",
                "data": it 
@@ -157,6 +156,8 @@ def trade(request):
                             total_buy-=-trade.price*trade.count
                     avg_buy = total_buy/current_stock_count
                     profit = (price-avg_buy)*count
+                    user.profit +=profit
+                    user.save()
                     Trade.objects.create(
                             uid=user,
                             buysell="False",
@@ -190,65 +191,61 @@ def community(request):
         temp=""
         temp+="           랭킹\n"
         temp+="=============================\n"
-        temp+="( 순위 / 이름 / 수익률 / 수익금 )\n"
+        temp+="( 순위 / 이름 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
         names = User.objects.all()
-        i=0
         tmembers=[]
-        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
-        total_buy=0
         for name in names:
-            # print(name.uname)
-            tmember = Member(name.uname)
-            for trade in trades:
-                if trade.uid.uname==tmember.name:
-                    if trade.buysell=="TRUE": #buy인 경우
-                        total_buy_cnt+=trade.count
-                        total_buy+=(trade.price*trade.count)
-                    elif trade.buysell=="FALSE": #sell인 경우
-                        avg_buy = total_buy/total_buy_cnt
-                        tmember.proceed_rate = (tmember.proceed_rate+(avg_buy-trade.price)/trade.price)/2
-                        tmember.proceed += (avg_buy-trade.price)*trade.count #수익금
-                        # print(f"proceed_rate : {self.proceed_rate} proceed : {self.proceed}")
-            tmembers.append(tmember)
-        tmembers.sort(reverse=True)
+            tmembers.append([name.uname,name.profit])
+        tmembers=sorted(tmembers,key=lambda x:x[1])
+        i=0
         for tmember in tmembers:
-            temp+=f"{tmember.rank}. {tmember.uname} {tmember.proceed_rate} {tmember.proceed}\n"
+            temp+=f"{i+1}"
+            temp+=f" / {tmember[0]} / {tmember[1]}  )\n"
         print(temp)
         return_string = temp
     elif success=="user":
-        total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
         total_buy=0
-        proceeds_rate=0
-        proceeds=0
-        table=[]
+        jusik_table = []
+        jusiks=""
         for trade in trades:
             if trade.uid.uname==req_uname:
-                if trade.buysell=="TRUE": #buy인 경우
-                    total_buy_cnt+=trade.count
-                    total_buy+=(trade.price*trade.count)
-                    table.append(f" {trade.code} / {proceeds} ({proceeds_rate}) / {trade.price} / {trade.count}")
-                elif trade.buysell=="FALSE": #sell인 경우
-                    #print(f"현재 {req_uname}의 seed : {trade.uid.seed} price: {trade.price}")
-                    avg_buy = total_buy/total_buy_cnt
-                    proceeds_rate = (proceeds_rate+(avg_buy-trade.price)/trade.price)/2
-                    proceeds += (avg_buy-trade.price)*trade.count #수익금(마이너스도 가능)
-                    table.append(f" {trade.code} / {proceeds} ({proceeds_rate}) / {trade.price} / {trade.count}")
+                if trade.code not in jusik_table:
+                    jusik_table.append(jusik_table)
         temp="          "
         temp+=req_uname
         temp+=" 님의 자산 정보입니다.\n"
         temp+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
         temp+="===========================================================\n"
         # temp+="가지고 있는 종목 정보"
-        for t in table:
-            temp+=t
-            temp+='\n'
+        for jusik in jusik_table:
+            jusiks = Trade.objects.filter(uid=req_uname,code=jusik)
+            temp+=jusik # 코드명 이름변경 필요
+            temp+=' / '
+            # 평단가 구하는 코드
+            total_buy=0
+            total_count=0
+            profit=0
+            for trade in jusiks:
+                if trade.buysell=="TRUE": #매수 기록
+                    total_buy+=trade.price*trade.count
+                    total_count += trade.count
+                elif trade.buysell=="FALSE": #매도 기록
+                    total_buy-=-trade.price*trade.count
+                    total_count -= trade.count
+            avg_buy = total_buy/total_count
+            current_price = 1000 # 현재가 받아오는 메소드
+            temp += current_price-avg_buy +"("
+            temp += (current_price-avg_buy)/avg_buy + ")"
+            temp+=current_price+" / "
+            temp+=total_count + " ) \n"
         print(temp)
         return_string = temp
     else:
         return_string = success
 
     return JsonResponse({"status" : "200-ok", "data" : return_string})
+
 
 def help(request):
     req_str = request.GET['msg'].split(' ')
