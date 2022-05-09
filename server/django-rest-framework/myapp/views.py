@@ -325,6 +325,7 @@ def help(request):
 def dbInit(request):
     creon =Creon()
     lst = creon.getCode()
+    Stock.objects.all().delete()
     for i,j in lst:
         Stock.objects.create(code=i,sname=j)
     return JsonResponse({"status" : "200-ok"})

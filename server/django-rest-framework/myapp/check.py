@@ -9,7 +9,6 @@ class Creon:
         pythoncom.CoInitialize()
         self.objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")
         bConnect = self.objCpCybos.IsConnect
-        print(bConnect)
         if (bConnect == 0):
             print("PLUS가 정상적으로 연결되지 않음. ")
             exit()
