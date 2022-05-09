@@ -187,9 +187,9 @@ def community(request):
         # print(f"{us.uid}\n {us.gid}\n {us.uname}\n {us.seed}")
     return_string = ""
     if success == "rank":
-        temp=""
-        temp+="           랭킹\n"
-        temp+="=============================\n"
+        temp="               "
+        temp+="랭킹\n"
+        temp+="======================\n"
         temp+="( 순위 / 이름 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
         names = User.objects.all()
@@ -221,8 +221,10 @@ def community(request):
         temp="          "
         temp+=req_uname
         temp+=" 님의 자산 정보입니다.\n"
+        temp+=f"모의 자산 잔액 : {req_user.seed}\n"
+        temp+=f"수익금 : {req_user.profit}\n"
         temp+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
-        temp+="===========================================================\n"
+        temp+="===================\n"
         # temp+="가지고 있는 종목 정보"
         total_buy=0
         total_count=0
@@ -252,11 +254,14 @@ def community(request):
                 current_price = 1000 # 현재가 받아오는 메소드
                 temp += str(current_price-avg_buy) +"("
                 if avg_buy == 0:
-                    temp += "0)"
+                    temp += "0) / "
                 else:
-                    temp += str((current_price-avg_buy)/avg_buy*100) + ")"
-                temp+=str(current_price)+" / "
-                temp+=str(total_count) + " ) \n"
+                    if (current_price-avg_buy)/avg_buy*100<0:
+                        temp+="0"
+                    else:
+                        temp += str(int((current_price-avg_buy)/avg_buy*100)) + "% / "
+                temp+=str(current_price)+"원 / "
+                temp+=str(total_count) + "개 ) \n"
                 print(temp)
                 return_string = temp
     else:
