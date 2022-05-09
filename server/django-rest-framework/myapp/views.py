@@ -24,9 +24,9 @@ from myapp.api import getStockPrice
 
 # Create your views here.
 # model 객체 이용하여 view에 보여주도록 하자.
-
 def check(request):
     creon = Creon()
+    it = creon.getCurPrice()
     return JsonResponse({
                 
             })
