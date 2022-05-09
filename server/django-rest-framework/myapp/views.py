@@ -28,7 +28,6 @@ from myapp.models import Stock
 def check(request):
     creon = Creon()
     it = creon.getCurPrice("A005930")
-
     return JsonResponse({
                "status" : "200-OK",
                "data": it 
