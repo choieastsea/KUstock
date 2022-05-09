@@ -9,6 +9,7 @@ urlpatterns = [
     path('help',views.help), # /help 명령어 수행
     path('trade', views.trade), # /trade 명령어 수행
     path('community', views.community), # /trade 명령어 수행
-    path('check', views.check)  #김혁진 추가 나중에 빼야됨.
+    path('check', views.check),  #김혁진 추가 나중에 빼야됨.
+    path('dbInit', views.dbInit)  #김혁진 추가 나중에 빼야됨.
 ]
 

@@ -15,6 +15,7 @@ from myapp.models import User
 from myapp.assist import assist
 from myapp.models import Trade
 from myapp.api import getStockPrice
+from myapp.models import Stock
 
 # class UserSerializer(serializers.ModelSerializer):
 #     """User Model Serializer"""
@@ -219,3 +220,9 @@ def help(request):
                 "data" : "시간을 뜻합니다. 입력할 때, xx:xx (x는 0~9의 자연수)의 형태로 입력하며, 24시간제 형태로 입력합니다."
             })
 
+def dbInit(request):
+    creon =Creon()
+    lst = creon.getCode()
+    for i,j in lst:
+        Stock.objects.create(i,j)
+    return JsonResponse({"status" : "200-ok"})
