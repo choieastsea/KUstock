@@ -22,7 +22,7 @@ class Alarm(models.Model):
 
 
 class Stock(models.Model):
-    code = models.IntegerField()
+    code = models.CharField(max_length=50)
     sname = models.CharField(max_length=50)
 
     class Meta:
