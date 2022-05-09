@@ -251,13 +251,14 @@ def community(request):
             else:
                 avg_buy = total_buy/total_count
                 print(f"avg_buy : {avg_buy} total_buy : {total_buy} total_count : {total_count}")
-                current_price = 1000 # 현재가 받아오는 메소드
+                print(f"jusik:{jusik[1:]}")
+                current_price = getStockPrice(jusik[1:]) # 현재가 받아오는 메소드
                 temp += str(current_price-avg_buy) +"("
                 if avg_buy == 0:
                     temp += "0) / "
                 else:
                     if (current_price-avg_buy)/avg_buy*100<0:
-                        temp+="0"
+                        temp+="0) / "
                     else:
                         temp += str(int((current_price-avg_buy)/avg_buy*100)) + "% / "
                 temp+=str(current_price)+"원 / "
