@@ -131,7 +131,7 @@ def trade(request):
                 trades = Trade.objects.filter(uid = user.uid, code = stock_code)
                 current_stock_count = 0
                 for trade in trades:
-                    if trade.buysell=="TRUE":
+                    if trade.buysell:
                         current_stock_count += trade.count
                     else:
                         current_stock_count -= trade.count
@@ -143,6 +143,15 @@ def trade(request):
                 else:
                     # 정상 매도 case
                     user.seed+=int(price)*count
+                    total_buy=0
+                    profit=0
+                    for trade in trades:
+                        if trade.buysell: #매수 기록
+                            total_buy+=trade.price*trade.count
+                        elif not trade.buysell: #매도 기록
+                            total_buy-=-trade.price*trade.count
+                    avg_buy = total_buy/current_stock_count
+                    profit = (avg_buy-price)*count
                     Trade.objects.create(
                             uid=user,
                             buysell=False,
@@ -150,37 +159,13 @@ def trade(request):
                             price=price,
                             count=count,
                             code=stock_code)
+                    # User.objects.update()
+                    print(profit)
                     return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
     else:
         return_string = success
     print(return_string)
     return JsonResponse({"status" : "200-OK", "data" : return_string})
-
-# class Member:
-#     name=""
-#     rank=0
-#     proceed=0
-#     proceed_rate=0
-
-#     def __init__(self,name):
-#         self.name = name
-
-#     def ranking(self):
-#         trades = Trade.objects.all()
-#         total_buy_cnt = 0 #평균 매수 가격 구하기 위한 변수
-#         total_buy=0
-#         for trade in trades:
-#             if trade.uid.uname==self.name:
-#                 if trade.buysell: #buy인 경우
-#                     total_buy_cnt+=trade.count
-#                     total_buy+=(trade.price*trade.count)
-#                 elif not trade.buysell: #sell인 경우
-#                     avg_buy = total_buy/total_buy_cnt
-#                     self.proceed_rate = (self.proceed_rate+(avg_buy-trade.price)/trade.price)/2
-#                     self.proceed += (avg_buy-trade.price)*trade.count #수익금
-#                     print(f"proceed_rate : {self.proceed_rate} proceed : {self.proceed}")
-#         # return [self.name,self.proceed,self.proceed_rate,self.rank]
-#         return self.proceed
 
 def community(request):
     # room, id 인자 획득
@@ -190,15 +175,10 @@ def community(request):
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)
-    # my_price = 124400 # 내가 구매한 주식 가격
-    # cu_price = 135200 # 현재 주식 가격
-    # my_cnt = 34 # 내가 구매한 주식 숫자
-    # profit_rate = (cu_price-my_price)/my_price*100 #수익률
-    # proceeds = my_price*profit_rate*my_cnt #수익금
     trades = Trade.objects.all()
-    
+
     #for trade in trades:
-        #print(f" tid number : {trade.tid}\n uid number : {trade.uid.uname}\n date : {trade.date}\n price : {trade.price}\n count : {trade.count}\n buysell : {trade.buysell}\n code : {trade.code}\n")
+        # print(f" tid number : {trade.tid}\n uid number : {trade.uid.uname}\n date : {trade.date}\n price : {trade.price}\n count : {trade.count}\n buysell : {trade.buysell}\n code : {trade.code}\n")
         # print(f"{us.uid}\n {us.gid}\n {us.uname}\n {us.seed}")
     return_string = ""
     if success == "rank":

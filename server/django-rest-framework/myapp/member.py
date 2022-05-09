@@ -28,4 +28,3 @@ class Member:
                     self.proceed_rate = (self.proceed_rate+(avg_buy-trade.price)/trade.price)/2
                     self.proceed += (avg_buy-trade.price)*trade.count #수익금
                     # print(f"proceed_rate : {self.proceed_rate} proceed : {self.proceed}")
-        return self.proceed
