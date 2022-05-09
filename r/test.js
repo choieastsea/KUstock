@@ -30,7 +30,6 @@ function response(
   if(check=="/"){
     var order = msg.split(" ")[0];
     if(map.get(order)){
-      replier.reply("테스트!");
       var url = "https://tricky-berries-tie-121-124-42-134.loca.lt";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text());
