@@ -2,6 +2,34 @@ from myapp.models import Stock
 from myapp.models import User
 # myapp::views.py에 필요한 함수에 대한 파일
 class assist:
+    def codeToword(code):
+        """
+        문자열의 종목코드가 오면 종목명으로 반환한다
+        만약 없다면, -1 문자열을 반환 
+        """
+        print(f"<<assist::codeToword>> : parm: {code}")
+        stock = Stock.objects.filter(code=code)
+        if stock.count() !=1:
+            print("해당하는 종목명 없음")
+            return -1
+        else:
+            print(f"<<assist::codeToword>> : return: {stock.sname}")
+            return stock.sname
+
+    def wordTocode(word):
+        """
+        문자열의 종목명이 오면 종목코드로 반환한다
+        만약 없다면, -1 을 반환 
+        """
+        print(f"<<assist::wordTocode>> : parm: {word}")
+        stock = Stock.objects.filter(sname=word)
+        if stock.count() !=1:
+            print("해당하는 stock code 없음")
+            return -1
+        else:
+            print(f"<<assist::codeToword>> : return: {stock.code}")
+            return stock.code
+
     def parseTrade(msg):
         """
         string type의 msg를 받아, [success: 메시지 문법 충족 여부, uname: 사용자 이름, stock_code: 매수 종목 코드, count: 매수량]를 리턴
@@ -37,6 +65,8 @@ class assist:
         # <count> 인자 확인
         try:
             count = int(msg_split[3])
+            if count <= 0:
+                success = "<count>에 자연수를 입력해주세요.\n"
         except:
             success = "<count>에 자연수를 입력해주세요.\n"
 
