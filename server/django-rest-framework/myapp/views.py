@@ -101,8 +101,8 @@ def trade(request):
             if price == -1:
                 return_string = f"{stock_code}에 해당하는 종목이 없습니다"
             else:    
+                user.seed -= int(price)*count
                 if user.seed >= 0:
-                    user.seed -= int(price)*count
                     user.save()
                     Trade.objects.create(
                         uid=user,
@@ -114,6 +114,7 @@ def trade(request):
                     # print(Trade.objects.filter(uid=User))
                     return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
                 else:
+                    user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
     elif success == "sell":
         user = User.objects.filter(uname=uname)
