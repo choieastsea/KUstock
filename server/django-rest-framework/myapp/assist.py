@@ -9,6 +9,10 @@ class assist:
         """
         #msg를 파싱해주세요~
         msg_split = msg.split(" ")
+        for msg in msg_split:
+            msg = msg.strip()
+        print("<<assist::parseTrade>>",end="")
+        print(msg_split)
         success = ""
         # 명령어 입력 확인
         if len(msg_split) == 4:
