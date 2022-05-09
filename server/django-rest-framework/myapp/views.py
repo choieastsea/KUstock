@@ -210,43 +210,63 @@ def community(request):
         total_buy=0
         jusik_table = []
         jusiks=""
+        req_user = User.objects.filter(uname=req_uname).first()
+        #req_user없는 경우 예외처리
         for trade in trades:
-            if trade.uid.uname==req_uname:
+            # print(f">>>>>trade.uid : {type(trade.uid.uid)} // req_user: {type(req_user.uid)}")
+            if trade.uid==req_user:
+                print(f"<<trade code>> : {trade.code} jusik table : {jusik_table}")
                 if trade.code not in jusik_table:
                     jusik_table.append(trade.code)
+        print("jusik table : ",end="")
+        print(jusik_table)
         temp="          "
         temp+=req_uname
         temp+=" 님의 자산 정보입니다.\n"
         temp+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
         temp+="===========================================================\n"
         # temp+="가지고 있는 종목 정보"
+        total_buy=0
+        total_count=0
         for jusik in jusik_table:
-            jusiks = Trade.objects.filter(uid=req_uname,code=jusik)
+            jusiks = Trade.objects.filter(uid=req_user.uid,code=jusik)
+            temp+="( "
             temp+=jusik # 코드명 이름변경 필요
             temp+=' / '
-            # 평단가 구하는 코드
-            total_buy=0
-            total_count=0
-            profit=0
+            # 평단가 구하는 코드    
             for trade in jusiks:
                 if trade.buysell=="TRUE": #매수 기록
-                    total_buy+=trade.price*trade.count
+                    print(f"total_buy : {total_buy} trade.price : {trade.price} trade.count : {trade.count}")
+                    total_buy+=(trade.price*trade.count)
                     total_count += trade.count
                 elif trade.buysell=="FALSE": #매도 기록
+                    print(f"total_buy : {total_buy} trade.price : {trade.price} trade.count : {trade.count}")
                     total_buy-=trade.price*trade.count
                     total_count -= trade.count
-            avg_buy = total_buy/total_count
-            current_price = 1000 # 현재가 받아오는 메소드
-            temp += current_price-avg_buy +"("
-            temp += (current_price-avg_buy)/avg_buy + ")"
-            temp+=current_price+" / "
-            temp+=total_count + " ) \n"
-        print(temp)
-        return_string = temp
+                print(f"total_buy : {total_buy} trade.price : {trade.price} trade.count : {trade.count}")
+                print(f"avg_buy :  total_buy : {total_buy} total_count : {total_count}")
+                #total_buy == 0 일때 오류메시지
+            if total_count==0:
+                return_string = temp
+            else:
+                avg_buy = total_buy/total_count
+                print(f"avg_buy : {avg_buy} total_buy : {total_buy} total_count : {total_count}")
+                current_price = 1000 # 현재가 받아오는 메소드
+                temp += str(current_price-avg_buy) +"("
+                if avg_buy == 0:
+                    temp += "0)"
+                else:
+                    temp += str((current_price-avg_buy)/avg_buy*100) + ")"
+                temp+=str(current_price)+" / "
+                temp+=str(total_count) + " ) \n"
+                print(temp)
+                return_string = temp
     else:
         return_string = success
 
     return JsonResponse({"status" : "200-ok", "data" : return_string})
+
+
 
 
 def help(request):
