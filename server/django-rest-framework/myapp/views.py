@@ -153,7 +153,7 @@ def trade(request):
                         if trade.buysell=="TRUE": #매수 기록
                             total_buy+=trade.price*trade.count
                         elif trade.buysell=="FALSE": #매도 기록
-                            total_buy-=-trade.price*trade.count
+                            total_buy-=trade.price*trade.count
                     avg_buy = total_buy/current_stock_count
                     profit = (price-avg_buy)*count
                     user.profit +=profit
@@ -166,7 +166,7 @@ def trade(request):
                             count=count,
                             code=stock_code)
                     # User.objects.update()
-                    print(profit)
+                    print(user.profit)
                     return_string = f"{user.uname}님 {stock_code} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
     else:
         return_string = success
@@ -231,7 +231,7 @@ def community(request):
                     total_buy+=trade.price*trade.count
                     total_count += trade.count
                 elif trade.buysell=="FALSE": #매도 기록
-                    total_buy-=-trade.price*trade.count
+                    total_buy-=trade.price*trade.count
                     total_count -= trade.count
             avg_buy = total_buy/total_count
             current_price = 1000 # 현재가 받아오는 메소드
