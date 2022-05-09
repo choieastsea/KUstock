@@ -95,6 +95,7 @@ def trade(request):
             # print(user.seed)
             #코드 조회
             price = getStockPrice(stock_code)
+            price = 1000
             if price == -1:
                 return_string = f"{stock_code}에 해당하는 종목이 없습니다"
             else:    
@@ -103,7 +104,7 @@ def trade(request):
                     user.save()
                     Trade.objects.create(
                         uid=user,
-                        buysell=True,
+                        buysell="TRUE",
                         date=datetime.today(),
                         price=price,
                         count=count,
@@ -125,18 +126,19 @@ def trade(request):
         else:
             user = user.first()
             price = getStockPrice(stock_code)
+            price = 1200
             if price == -1:
                 return_string = f"{stock_code}에 해당하는 종목이 없습니다"
             else:
                 trades = Trade.objects.filter(uid = user.uid, code = stock_code)
                 current_stock_count = 0
                 for trade in trades:
-                    if trade.buysell:
+                    if trade.buysell=="TRUE":
                         current_stock_count += trade.count
                     else:
                         current_stock_count -= trade.count
                     
-                print(current_stock_count)
+                print(f"현재 남은 주식 개수 : {current_stock_count}")
                 if current_stock_count<count:
                     # trade에 buy한 내역이 없는 경우 
                     return_string = f"{stock_code} 종목을 {count}주 이상 소유하고 있지 않습니다"
@@ -146,15 +148,15 @@ def trade(request):
                     total_buy=0
                     profit=0
                     for trade in trades:
-                        if trade.buysell: #매수 기록
+                        if trade.buysell=="TRUE": #매수 기록
                             total_buy+=trade.price*trade.count
-                        elif not trade.buysell: #매도 기록
+                        elif trade.buysell=="FALSE": #매도 기록
                             total_buy-=-trade.price*trade.count
                     avg_buy = total_buy/current_stock_count
-                    profit = (avg_buy-price)*count
+                    profit = (price-avg_buy)*count
                     Trade.objects.create(
                             uid=user,
-                            buysell=False,
+                            buysell="False",
                             date=datetime.today(),
                             price=price,
                             count=count,
@@ -197,10 +199,10 @@ def community(request):
             tmember = Member(name.uname)
             for trade in trades:
                 if trade.uid.uname==tmember.name:
-                    if trade.buysell: #buy인 경우
+                    if trade.buysell=="TRUE": #buy인 경우
                         total_buy_cnt+=trade.count
                         total_buy+=(trade.price*trade.count)
-                    elif not trade.buysell: #sell인 경우
+                    elif trade.buysell=="FALSE": #sell인 경우
                         avg_buy = total_buy/total_buy_cnt
                         tmember.proceed_rate = (tmember.proceed_rate+(avg_buy-trade.price)/trade.price)/2
                         tmember.proceed += (avg_buy-trade.price)*trade.count #수익금
@@ -219,11 +221,11 @@ def community(request):
         table=[]
         for trade in trades:
             if trade.uid.uname==req_uname:
-                if trade.buysell: #buy인 경우
+                if trade.buysell=="TRUE": #buy인 경우
                     total_buy_cnt+=trade.count
                     total_buy+=(trade.price*trade.count)
                     table.append(f" {trade.code} / {proceeds} ({proceeds_rate}) / {trade.price} / {trade.count}")
-                elif not trade.buysell: #sell인 경우
+                elif trade.buysell=="FALSE": #sell인 경우
                     #print(f"현재 {req_uname}의 seed : {trade.uid.seed} price: {trade.price}")
                     avg_buy = total_buy/total_buy_cnt
                     proceeds_rate = (proceeds_rate+(avg_buy-trade.price)/trade.price)/2
