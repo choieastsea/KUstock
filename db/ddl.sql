@@ -3,11 +3,19 @@ create database kustock;
 use kustock;
 -- user
 CREATE TABLE user (
+<<<<<<< HEAD
 	uid INTEGER NOT NULL,
 	gid INTEGER NOT NULL,
 	uname VARCHAR(50) NOT NULL,
 	seed INTEGER NOT NULL,
 	profit INTEGER NOT NULL
+=======
+   uid INTEGER NOT NULL,
+   gid INTEGER NOT NULL,
+   uname VARCHAR(50) NOT NULL,
+   seed INTEGER NOT NULL,
+   profit INTEGER NOT NULL
+>>>>>>> main
 );
 
 -- user
@@ -22,6 +30,7 @@ ALTER TABLE user
 
 -- trade
 CREATE TABLE trade (
+<<<<<<< HEAD
 	tid INTEGER NOT NULL,
 	uid INTEGER NOT NULL,
 	date DATE NOT NULL,
@@ -29,6 +38,15 @@ CREATE TABLE trade (
 	count INTEGER NOT NULL,
 	buysell ENUM('TRUE','FALSE') NOT NULL,
 	code CHAR(7) NOT NULL
+=======
+   tid INTEGER NOT NULL,
+   uid INTEGER NOT NULL,
+   date DATE NOT NULL,
+   price INTEGER NOT NULL,
+   count INTEGER NOT NULL,
+   buysell ENUM('TRUE','FALSE') NOT NULL,
+   code CHAR(7) NOT NULL
+>>>>>>> main
 );
 
 -- trade
@@ -44,11 +62,19 @@ ALTER TABLE trade
 
 -- alarm
 CREATE TABLE alarm (
+<<<<<<< HEAD
 	aid INTEGER NOT NULL,
 	uid INTEGER NOT NULL,
 	code CHAR(7) NOT NULL,
 	time TIME NOT NULL,
 	onoff ENUM('TRUE','FALSE') NOT NULL
+=======
+   aid INTEGER NOT NULL,
+   uid INTEGER NOT NULL,
+   code CHAR(7) NOT NULL,
+   time TIME NOT NULL,
+   onoff ENUM('TRUE','FALSE') NOT NULL
+>>>>>>> main
 );
 
 -- alarm
@@ -64,8 +90,13 @@ ALTER TABLE alarm
 
 -- 새 테이블
 CREATE TABLE stock (
+<<<<<<< HEAD
 	code CHAR(7) NOT NULL,
 	sname VARCHAR(50) NOT NULL
+=======
+   code CHAR(7) NOT NULL,
+   sname VARCHAR(50) NOT NULL
+>>>>>>> main
 );
 
 -- trade
@@ -80,6 +111,7 @@ ALTER TABLE trade
 
 -- alarm
 ALTER TABLE alarm
+<<<<<<< HEAD
 	ADD CONSTRAINT FK_user_TO_alarm -- user -> alarm
 	FOREIGN KEY (
 	uid -- uid
@@ -87,3 +119,12 @@ ALTER TABLE alarm
 	REFERENCES user ( -- user
 	uid -- uid
 	);
+=======
+   ADD CONSTRAINT FK_user_TO_alarm -- user -> alarm
+   FOREIGN KEY (
+   uid -- uid
+   )
+   REFERENCES user ( -- user
+   uid -- uid
+   );
+>>>>>>> main
