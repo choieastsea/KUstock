@@ -58,6 +58,34 @@ def createUser(request):
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
     
+def chart(request):
+    # msg에서 명령어 파싱
+    [success, stock_code] = assist.parseChart(request.GET['msg'])
+    # 파싱 테스트
+    print("success:"+ success+", stock_code : "+str(stock_code))
+    
+    return_string = ""
+    if success == "stock":
+        # /chart <stock> 명령어
+        return_string = "stock"
+    elif success == "inform":
+        # /chart <stock> inform 명령어
+        return_string = "inform"
+    elif success == "institutional":
+        # /chart <stock> inform 명령어
+        return_string = "institutional"
+    elif success == "individual":
+        # /chart <stock> inform 명령어
+        return_string = "individual"
+    elif success == "foreign":
+        # /chart <stock> inform 명령어
+        return_string = "foreign"
+    else:
+        return_string = success
+
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})  
+
 def stock(request):
     # msg에서 명령어 파싱
     [success, stock_code, theme] = assist.parseStock(request.GET['msg'])

@@ -151,3 +151,34 @@ class assist:
 
         return [success,stock_code, theme]
     
+    def parseChart(msg):
+        msg_split = msg.split(" ")
+        success = ""
+        stock_code = ""
+
+        if len(msg_split) >= 2:
+            stock_code = Stock.objects.filter(sname=msg_split[1])
+            if stock_code.count() == 1:
+                stock_code = stock_code.first().code
+            else:
+                success = "주식 명을 확인해주세요.\n"
+            if len(msg_split) == 2:
+                success = "stock"
+            elif len(msg_split) == 3:
+                if msg_split[2] == "inform":
+                    success = "inform"
+                elif msg_split[2] == "institutional":
+                    success = "institutional"
+                elif msg_split[2] == "individual":
+                    success = "individual"
+                elif msg_split[2] == "foreign":
+                    success = "foreign"
+                else:
+                    success = "/chart <stock> [inform/institutional/individual/foreign] 중 하나로 입력되었는지 확인해주세요.\n"
+            else:
+                success = "/chart <stock> [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
+        else:
+            success = "/chart <stock> [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
+
+
+        return [success,stock_code]
