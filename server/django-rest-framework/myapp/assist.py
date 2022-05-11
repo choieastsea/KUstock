@@ -96,7 +96,7 @@ class assist:
 
 
         return [success, req_user]
-        def parseCommunity(msg):
+    def parseCommunity(msg):
         msg_split = msg.split(" ")
         success = ""
         req_user = ""
