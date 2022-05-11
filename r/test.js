@@ -5,7 +5,9 @@ var map = new Map([
   ["/test",true],
   ["/help",true],
   ["/trade",true],
-  ["/community",true]
+  ["/community",true],
+  ["/stock",true],
+  ["chart",true]
 ]);
 
 /**
