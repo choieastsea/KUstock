@@ -136,8 +136,10 @@ class assist:
                     success = "/stock top [deal/sum/rise] 로 입력되었는지 확인해주세요.\n"
             elif msg_split[1] == "theme":
                 # 테마 정보 받아오는 메소드 필요함
+                success = "theme"
                 theme = msg_split[2]
             elif msg_split[1] == "state":
+                success = "stock"
                 stock_code = Stock.objects.filter(sname=msg_split[2])
                 if stock_code.count() == 1:
                     stock_code = stock_code.first().code
