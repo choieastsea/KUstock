@@ -96,3 +96,58 @@ class assist:
 
 
         return [success, req_user]
+        def parseCommunity(msg):
+        msg_split = msg.split(" ")
+        success = ""
+        req_user = ""
+        if len(msg_split) == 2:
+            if msg_split[1] == "rank":
+                success = "rank"
+            else:
+                # 해당 user가 존재하는지 확인하는 메소드 필요
+                req_user = User.objects.filter(uname=msg_split[1])
+                if req_user.count() == 1:
+                    success = "user"
+                    req_user = req_user.first().uname
+                else:
+                    success = "사용자가 존재하지않습니다.\n"
+                    req_user = ""
+        else:
+            success = "/community rank 혹은 /community <user> 형태로 입력되었는지 확인해주세요.\n"
+
+
+        return [success, req_user]
+    
+    def parseStock(msg):
+        msg_split = msg.split(" ")
+        success = ""
+        stock_code = ""
+        theme = ""
+
+        if len(msg_split) == 3:
+            if msg_split[1] == "top":
+                if msg_split[2] == "deal":
+                    success = "deal"
+                elif msg_split[2] == "sum":
+                    success = "sum"
+                elif msg_split[2] == "rise":
+                    success = "rise"
+                else:
+                    success = "/stock top [deal/sum/rise] 로 입력되었는지 확인해주세요.\n"
+            elif msg_split[1] == "theme":
+                # 테마 정보 받아오는 메소드 필요함
+                theme = msg_split[2]
+            elif msg_split[1] == "state":
+                stock_code = Stock.objects.filter(sname=msg_split[2])
+                if stock_code.count() == 1:
+                    stock_code = stock_code.first().code
+                else:
+                    success = "주식 명을 확인해주세요.\n"
+            else:
+                success = "/stock [top/theme/state] 로 시작하며 입력되었는지 확인해주세요.\n"
+        else:
+            success = "/stock [top/theme/state] [theme/stock] 처럼 3개로 구성하여 명령어가 입력되었는지 확인해주세요.\n"
+            
+
+        return [success,stock_code, theme]
+    
