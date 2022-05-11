@@ -61,7 +61,8 @@ def createUser(request):
 def stock(request):
     # msg에서 명령어 파싱
     [success, stock_code, theme] = assist.parseStock(request.GET['msg'])
-
+    # 파싱 테스트
+    print("success:"+ success+", stock_code : "+str(stock_code)+", theme:"+ str(theme))
     return_string = ""
 
     if success == "deal":
