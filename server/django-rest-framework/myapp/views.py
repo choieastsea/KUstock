@@ -57,6 +57,33 @@ def createUser(request):
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
+    
+def stock(request):
+    # msg에서 명령어 파싱
+    [success, stock_code, theme] = assist.parseStock(request.GET['msg'])
+
+    return_string = ""
+
+    if success == "deal":
+        # /stock top deal 명령어
+        return_string = "deal"
+    elif success == "sum":
+        # /stock top sum 명령어
+        return_string = "deal"
+    elif success == "rise":
+        # /stock top rise 명령어
+        return_string = "rise"
+    elif success == "theme":
+        # /stock theme <theme> 명령어 <theme>정보는 theme 변수에 저장됨
+        return_string = "theme"
+    elif success == "stock":
+        # /stock stock <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
+        return_string = "stock"
+    else:
+        return_string = success
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})    
+    
 def trade(request):
     """
     test url : {root url}/api/trade?id=김태헌&room=1&msg=/trade buy 005980 2 (trade buy/sell stock_code count)
