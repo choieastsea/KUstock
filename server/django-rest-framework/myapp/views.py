@@ -80,9 +80,7 @@ def kustock(request):
 
 def chart(request):
     # msg에서 명령어 파싱
-    #[success, stock_code] = assist.parseChart(request.GET['msg'])
-    success ="inform"
-    stock_code = "A035420"
+    [success, stock_code] = assist.parseChart(request.GET['msg'])
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code))
     
@@ -99,7 +97,7 @@ def chart(request):
         tr = soup.select('table>tr')
 
         for i in range(1, len(tr)-1):
-            if tr[i].select('td')[0].text.strip():
+           if tr[i].select('td')[0].text.strip():
                 result[0].append(tr[i].select('td')[0].text.strip())
                 result[1].append(int(tr[i].select('td')[1].text.strip().replace("," , "")))
         return_string += assist.codeToword(stock_code)+'\n'
@@ -129,20 +127,55 @@ def chart(request):
             elif tr[i].text.split()[0] =="거래량":
                 return_string +=f"거래량({tr[i].text.split()[1]}주)"
         print(return_string)
+
     elif success == "institutional":
         # /chart <stock> inform 명령어
-        return_string = "institutional"
+        sell_lst = []
+        buy_lst = []
+        url = "https://finance.naver.com/item/frgn.naver?code=" +str(stock_code[1:])
+        headers = {'User-agent': 'Mozilla/5.0'}
+        res = requests.get(url, headers=headers)
+        html = res.content
+        soup = BeautifulSoup(html, 'html.parser')
+        tr = soup.select('#content > div.section.inner_sub > table.type2>tr:nth-child(5)>td>span')
+        for i in range(len(tr)-1):
+            if i==5:
+                return_string += f"기관 순 매매량 : {tr[i].text}\n\n"
+
+        tr = soup.select('#content > div.section.inner_sub > div:nth-child(1) > table>tbody >tr >td>span')
+        for i in range(0, len(tr)-5, 4):
+            sell_lst.append([tr[i].text, tr[i+1].text])
+            buy_lst.append([tr[i+2].text, tr[i+3].text])
+        
+        return_string +=f"매수 상위 기관 :\n"
+        for i in range(5):
+            return_string+=f"{buy_lst[i][0]}({buy_lst[i][1]}) "
+        
+
+        return_string +=f"\n\n매도 상위 기관 :\n"
+        for i in range(5):
+            return_string+=f"{sell_lst[i][0]}({sell_lst[i][1]}) "
+        print(return_string)
     elif success == "individual":
         # /chart <stock> inform 명령어
-        return_string = "individual"
+        return_string = "개인 매매량은 지원해주지 않습니다."
     elif success == "foreign":
         # /chart <stock> inform 명령어
-        return_string = "foreign"
+        url = "https://finance.naver.com/item/frgn.naver?code=" +str(stock_code[1:])
+        headers = {'User-agent': 'Mozilla/5.0'}
+        res = requests.get(url, headers=headers)
+        html = res.content
+        soup = BeautifulSoup(html, 'html.parser')
+        tr = soup.select('#content > div.section.inner_sub > table.type2>tr:nth-child(5)>td>span')
+        for i in range(len(tr)-1):
+            if i==6:
+                return_string += f"외국인 순 매매량 : {tr[i].text}"
     else:
         return_string = success
 
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string})   
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
+
 
 def stock(request):
     # msg에서 명령어 파싱
