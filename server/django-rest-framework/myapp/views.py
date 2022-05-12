@@ -64,7 +64,7 @@ def chart(request):
     # msg에서 명령어 파싱
     #[success, stock_code] = assist.parseChart(request.GET['msg'])
     success ="inform"
-    stock_code = "A005930"
+    stock_code = "A035420"
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code))
     
@@ -93,14 +93,24 @@ def chart(request):
 
     elif success == "inform":
         # /chart <stock> inform 명령어
+        return_string+=f"현재 가격 : "
         url = "https://finance.naver.com/item/sise.naver?code=" +str(stock_code[1:])
         headers = {'User-agent': 'Mozilla/5.0'}
         res = requests.get(url, headers=headers)
         html = res.content
         soup = BeautifulSoup(html, 'html.parser')
-        tr = soup.select('#section inner_sub>tbody>tr')
-        print(soup)
-        return_string = "inform"
+        tr = soup.select('#middle>dl>dd')
+        for i in range(1, len(tr)-1):
+            print(tr[i].text)
+            if tr[i].text.split()[0]=="현재가":
+                lst = tr[i].text.split()[1:]
+                sign = "+"
+                if lst[2] == "하락":
+                    sign = '-'
+                return_string+= f"{lst[0]}({sign}{lst[3]}원, {lst[5]}%)\n"
+            elif tr[i].text.split()[0] =="거래량":
+                return_string +=f"거래량({tr[i].text.split()[1]}주)"
+        print(return_string)
     elif success == "institutional":
         # /chart <stock> inform 명령어
         return_string = "institutional"
