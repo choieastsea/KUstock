@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime
 import os
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 from myapp.member import Member
 #models import
@@ -180,7 +181,21 @@ def stock(request):
     elif success == "stock":
         # /stock state <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
         ans=""
-        
+        stock_code=stock_code[1:]
+        ans+=(f"{stock_code} 주요 재무제표\n")
+        stock_url = f"https://finance.naver.com/item/main.nhn?code={stock_code}"
+        r = requests.get(stock_url)
+        df=pd.read_html(r.text)[3]
+        df.set_index(df.columns[0],inplace=True)
+        df.index.rename('<주요재무정보>',inplace=True)
+        df.columns=df.columns.droplevel(2)
+        # ans+=df
+        annul_date = pd.DataFrame(df).xs('최근 연간 실적',axis=1)
+        quater_date = pd.DataFrame(df).xs('최근 분기 실적',axis=1)
+        ans+=(f"최근 연간 실적 \n {annul_date}\n\n")
+        ans+=(f"최근 분기 실적 \n {quater_date}\n")
+        # ans+=stock_code
+        print(ans)
         return_string = ans
     else:
         return_string = success
