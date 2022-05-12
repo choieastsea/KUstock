@@ -60,7 +60,24 @@ def createUser(request):
         # jsoup에서 post 전송이 된다면 해야겠지만,
         # csrf 토큰 처리가 필요함!
         return HttpResponse('post Create!!')
-    
+
+def kustock(request):
+    check = request.GET['msg'].split(" ")
+    seed = 50000000
+    if len(check) == 1:
+        room = request.GET['room']
+        sender = request.GET['id']
+        user = User.objects.filter(uname=sender, gid = room)
+        if user.count() != 1:
+            User.objects.create(gid=room,uname=sender,seed=seed)
+            return_string = "채티방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
+        else:
+            return_string = "이미 "+sender+"유저가 존재합니다."
+    else:
+        return_string = "명령어가 /kustock 으로 입력되었는지 확인해주세요.\n"
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})   
+
 def chart(request):
     # msg에서 명령어 파싱
     #[success, stock_code] = assist.parseChart(request.GET['msg'])

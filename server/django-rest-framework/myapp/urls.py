@@ -8,6 +8,7 @@ urlpatterns = [
     path('test',views.test), # msg 그대로 전송
     path('help',views.help), # /help 명령어 수행
     path('create',views.createUser),
+    path('kustock',views.kustock),    # /kustock 명령어 수행
     path('trade', views.trade), # /trade 명령어 수행
     path('community', views.community), # /community 명령어 수행
     path('stock',views.stock),   # /stock 명령어 수행
