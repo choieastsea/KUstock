@@ -4,7 +4,7 @@ use kustock;
 -- user
 CREATE TABLE user (
    uid INTEGER NOT NULL,
-   gid INTEGER NOT NULL,
+   gid VARCHAR(50) NOT NULL,
    uname VARCHAR(50) NOT NULL,
    seed INTEGER NOT NULL,
    profit INTEGER NOT NULL
