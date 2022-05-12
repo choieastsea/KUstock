@@ -162,7 +162,7 @@ class Trade(models.Model):
 
 class User(models.Model):
     uid = models.AutoField(primary_key=True)
-    gid = models.IntegerField()
+    gid = models.CharField(max_length=50)
     uname = models.CharField(max_length=50)
     seed = models.IntegerField()
     profit = models.IntegerField()

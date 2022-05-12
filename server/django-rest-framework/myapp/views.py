@@ -50,7 +50,7 @@ def test(request):
         })
 def createUser(request):
     if request.method == 'GET':
-        gid = int(request.GET['gid'])
+        gid = request.GET['gid']
         uname = request.GET['uname']
         seed = int(request.GET['seed'])
         # 유효성 검사 해줄 필요 있음!
