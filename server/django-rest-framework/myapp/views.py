@@ -94,36 +94,47 @@ def stock(request):
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code)+", theme:"+ str(theme))
     return_string = ""
-    jusik_url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
+    jusik_url = "https://finance.naver.com/sise/field_submit.naver?menu=market_sum&returnUrl=http%3A%2F%2Ffinance.naver.com%2Fsise%2Fsise_market_sum.naver&fieldIds=quant&fieldIds=amount&fieldIds=market_sum&fieldIds=per&fieldIds=roe&fieldIds=listed_stock_cnt"
+    # jusik_url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
     res=requests.get(jusik_url)
     soup=BeautifulSoup(res.text,'lxml')
-    stock_head = soup.find("thead").find_all("th")
+    # print(soup)
+    stock_head = soup.find("thead").find_all("tr")
+    # print(stock_head)
     data_head=[head.get_text() for head in stock_head] 
-    # data_head : [0'N', 1'종목명', 2'현재가', 3'전일비', 4'등락률', 5'액면가', 6'시가총액', 7'상장주식수', 8'외국인비율', ' 9'거래량', 10'PER', 11'ROE', 12'토론실']
+    # data_head : [0'N', 1'종목명', 2'현재가', 3'전일비', 4'등락률', 5'액면가', 6'거래량', 7'거래대금', 8'상장주식수', ' 9'시가총액', 10'PER', 11'ROE', 12'토론실']
+    # print(f"data_head : {data_head}")
     stock_list=soup.find("table",attrs={"class":"type_2"}).find("tbody").find_all("tr")
     stocks=[]
+    # print(f"data_head : {data_head}")
+    # print(f"len(data_head) : {len(data_head)}")
+    # print(stock_list[0].get_text())
+    # print(stock_list)
     for stock in stock_list:
+        # print(f"stock:{stock}")
         if len(stock)>1:
             # print(stock.get_text().split())
             temp = stock.get_text().split()
+            # print(f"temp : {temp} \n\n\n")
+            # print(f"len(data_head) : {len(data_head)}")
             for i in range(12):
-                if i!=1 and i!=4 and temp[i]!='N/A':
+                if i!=1 and temp[i]!='N/A':
                     temp[i]=temp[i].replace(",","")
                     # print(f"temp는 {temp[i]}")
                     temp[i]=float(temp[i])
-                    if i==9:
-                        temp[i]=int(temp[i])
+                    # print(f"temp[i] : {temp[i]}\n")
                     # print(f"{i}번 {temp[i]} {type(temp[i])}\n")
                 # print(f"temp값은 {temp}")
             stocks.append(temp)
+    # print(f"stocks = {stocks}")
     if success == "deal":
         # /stock top deal 명령어
         ans=""
-        ans+=f"{datetime.today().date()} 거래대금 상위 top5 종목\n"
-        stocks = sorted(stocks,key=lambda x:x[9],reverse=True)
+        ans+=f"{datetime.today().date()} 거래량 상위 top5 종목\n"
+        stocks = sorted(stocks,key=lambda x:x[6],reverse=True)
         i=0
         for stock in stocks:
-            ans+=f"{i+1}. {stock[1]} | {stock[2]}원 | {stock[9]} 주\n"
+            ans+=f"{i+1}. {stock[1]} | {int(stock[2])}원 | {int(stock[6])} 주\n"
             i+=1
             if i==5:
                 break
@@ -133,11 +144,11 @@ def stock(request):
     elif success == "sum":
         # /stock top sum 명령어
         ans=""
-        ans+=f"{datetime.today().date()} 상승률 상위 top5 종목\n"
-        stocks = sorted(stocks,key=lambda x:x[9],reverse=True)
+        ans+=f"{datetime.today().date()} 거래대금 상위 top5 종목\n"
+        stocks = sorted(stocks,key=lambda x:x[7],reverse=True)
         i=0
         for stock in stocks:
-            ans+=f"{i+1}. {stock[1]} | {stock[2]}원 | {stock[9]} 주\n"
+            ans+=f"{i+1}. {stock[1]} | {int(stock[2])}원 | {int(stock[7])} 억 원\n"
             i+=1
             if i==5:
                 break
@@ -146,15 +157,28 @@ def stock(request):
         return_string = ans
     elif success == "rise":
         # /stock top rise 명령어
-
-        return_string = "rise"
+        ans=""
+        ans+=f"{datetime.today().date()} 상승률 상위 top5 종목\n"
+        stocks = sorted(stocks,key=lambda x:x[4],reverse=True)
+        i=0
+        for stock in stocks:
+            ans+=f"{i+1}. {stock[1]} | {int(stock[2])}원 | {stock[4]} \n"
+            i+=1
+            if i==5:
+                break
+        # ans+=str(stocks)
+        print(ans)
+        return_string = ans
     elif success == "theme":
         # /stock theme <theme> 명령어 <theme>정보는 theme 변수에 저장됨
-
-        return_string = "theme"
+        ans=""
+        
+        return_string = ans
     elif success == "stock":
         # /stock state <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
-        return_string = "stock"
+        ans=""
+        
+        return_string = ans
     else:
         return_string = success
 
