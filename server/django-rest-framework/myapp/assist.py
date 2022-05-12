@@ -53,7 +53,7 @@ class assist:
             else:
                 success = "/trade buy 혹은 /trade sell 로 시작하였는지 확인해주세요.\n"
         else:
-            success = "/trade (buy/sell) <stock> <count> 의 형태로 입력되었는지 확인해주세요.\n"
+            success = "/trade (buy/sell) &ltstock> &ltcount> 의 형태로 입력되었는지 확인해주세요.\n"
             return [success, 0, 0]
 
         # <stock> 인자 확인
@@ -68,9 +68,9 @@ class assist:
         try:
             count = int(msg_split[3])
             if count <= 0:
-                success = "<count>에 자연수를 입력해주세요.\n"
+                success = "&ltcount>에 자연수를 입력해주세요.\n"
         except:
-            success = "<count>에 자연수를 입력해주세요.\n"
+            success = "&ltcount>에 자연수를 입력해주세요.\n"
 
         return [success, stock_code, count]
 
@@ -79,9 +79,12 @@ class assist:
         msg_split = msg.split(" ")
         success = ""
         req_user = ""
-        if len(msg_split) == 2:
+        if len(msg_split) >= 2:
             if msg_split[1] == "rank":
-                success = "rank"
+                if len(msg_split) == 2:
+                    success = "rank"
+                else:
+                    success = "/community rank 의 형태로 입력되었는지 확인해주세요.\n"
             else:
                 msg_user = msg.split("/community ")
                 # 해당 user가 존재하는지 확인하는 메소드 필요
@@ -93,7 +96,7 @@ class assist:
                     success = "사용자가 존재하지않습니다.\n"
                     req_user = ""
         else:
-            success = "/community rank 혹은 /community <user> 형태로 입력되었는지 확인해주세요.\n"
+            success = "/community rank 혹은 /community &ltuser&gt 형태로 입력되었는지 확인해주세요.\n"
 
 
         return [success, req_user]
@@ -156,11 +159,11 @@ class assist:
                 elif msg_split[2] == "foreign":
                     success = "foreign"
                 else:
-                    success = "/chart <stock> [inform/institutional/individual/foreign] 중 하나로 입력되었는지 확인해주세요.\n"
+                    success = "/chart &ltstock&gt [inform/institutional/individual/foreign] 중 하나로 입력되었는지 확인해주세요.\n"
             else:
-                success = "/chart <stock> [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
+                success = "/chart &ltstock&gt [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
         else:
-            success = "/chart <stock> [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
+            success = "/chart &ltstock&gt [inform/institutional/individual/foreign] 의 형태로 입력되었는지 확인해주세요.\n"
 
 
         return [success,stock_code]

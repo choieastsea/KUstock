@@ -69,7 +69,7 @@ def kustock(request):
         sender = request.GET['id']
         user = User.objects.filter(uname=sender, gid = room)
         if user.count() != 1:
-            User.objects.create(gid=room,uname=sender,seed=seed)
+            User.objects.create(gid=room,uname=sender,seed=seed, profit = 0)
             return_string = "채티방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
         else:
             return_string = "이미 "+sender+"유저가 존재합니다."

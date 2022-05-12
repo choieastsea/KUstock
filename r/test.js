@@ -33,11 +33,10 @@ function response(
   if(check=="/"){
     var order = msg.split(" ")[0];
     if(map.get(order)){
-      var url = "https://tricky-berries-tie-121-124-42-134.loca.lt";
+      var url = "https://4063-222-109-202-99.jp.ngrok.io";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text());
-      //replier.reply(str.data);
-      replier.reply(str);
+      replier.reply(str.data);
     }else{
       replier.reply("등록되지않은 명령어입니다.");
     }
