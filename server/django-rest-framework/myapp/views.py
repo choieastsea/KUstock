@@ -8,6 +8,8 @@ from rest_framework import serializers, viewsets
 from pathlib import Path
 from datetime import datetime
 import os
+import requests
+from bs4 import BeautifulSoup
 from myapp.member import Member
 #models import
 from myapp import models
@@ -92,21 +94,36 @@ def stock(request):
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code)+", theme:"+ str(theme))
     return_string = ""
-
+    jusik_url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
+    res=requests.get(jusik_url)
+    soup=BeautifulSoup(res.text,'lxml')
+    stock_head = soup.find("thead").find_all("th")
+    data_head=[head.get_text() for head in stock_head] # ['N', '종목명', '현재가', '전일비', '등락률', '액면가', '시가총액', '상장주식수', '외국인비율', ' '거래량', 'PER', 'ROE', '토론실']
+    stock_list=soup.find("table",attrs={"class":"type_2"}).find("tbody").find_all("tr")
+    for stock in stock_list:
+        if len(stock)>1:
+            print(stock.get_text().split())
     if success == "deal":
         # /stock top deal 명령어
-        return_string = "deal"
+        ans=""
+        ans+=f"{datetime.today()}\n"
+        ans+=str(data_head)
+        # print(ans)
+        return_string = ans
     elif success == "sum":
         # /stock top sum 명령어
+
         return_string = "deal"
     elif success == "rise":
         # /stock top rise 명령어
+
         return_string = "rise"
     elif success == "theme":
         # /stock theme <theme> 명령어 <theme>정보는 theme 변수에 저장됨
+
         return_string = "theme"
     elif success == "stock":
-        # /stock stock <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
+        # /stock state <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
         return_string = "stock"
     else:
         return_string = success
