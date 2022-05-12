@@ -83,8 +83,9 @@ class assist:
             if msg_split[1] == "rank":
                 success = "rank"
             else:
+                msg_user = msg.split("/community ")
                 # 해당 user가 존재하는지 확인하는 메소드 필요
-                req_user = User.objects.filter(uname=msg_split[1])
+                req_user = User.objects.filter(uname=msg_user[1])
                 if req_user.count() == 1:
                     success = "user"
                     req_user = req_user.first().uname
