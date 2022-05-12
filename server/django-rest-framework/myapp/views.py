@@ -62,16 +62,44 @@ def createUser(request):
     
 def chart(request):
     # msg에서 명령어 파싱
-    [success, stock_code] = assist.parseChart(request.GET['msg'])
+    #[success, stock_code] = assist.parseChart(request.GET['msg'])
+    success ="inform"
+    stock_code = "A005930"
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code))
     
-    return_string = ""
+    return_string = "" 
+    
     if success == "stock":
         # /chart <stock> 명령어
-        return_string = "stock"
+        result = [[],[]]
+        url = "https://finance.naver.com/item/sise_day.nhn?code="+str(stock_code[1:])
+        headers = {'User-agent': 'Mozilla/5.0'}
+        res = requests.get(url, headers=headers)
+        html = res.content
+        soup = BeautifulSoup(html, 'html.parser')
+        tr = soup.select('table>tr')
+
+        for i in range(1, len(tr)-1):
+            if tr[i].select('td')[0].text.strip():
+                result[0].append(tr[i].select('td')[0].text.strip())
+                result[1].append(int(tr[i].select('td')[1].text.strip().replace("," , "")))
+        return_string += assist.codeToword(stock_code)+'\n'
+
+
+        for i in range(7):
+            dif = round((result[1][i+1] - result[1][i])/(result[1][i+1]) * 100, 2)
+            return_string+= f"{result[0][i]}  {result[1][i]}원 ({dif}%)\n" 
+
     elif success == "inform":
         # /chart <stock> inform 명령어
+        url = "https://finance.naver.com/item/sise.naver?code=" +str(stock_code[1:])
+        headers = {'User-agent': 'Mozilla/5.0'}
+        res = requests.get(url, headers=headers)
+        html = res.content
+        soup = BeautifulSoup(html, 'html.parser')
+        tr = soup.select('#section inner_sub>tbody>tr')
+        print(soup)
         return_string = "inform"
     elif success == "institutional":
         # /chart <stock> inform 명령어
@@ -86,7 +114,7 @@ def chart(request):
         return_string = success
 
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string})  
+    return JsonResponse({"status" : "200-OK", "data" : return_string})   
 
 def stock(request):
     # msg에서 명령어 파싱
