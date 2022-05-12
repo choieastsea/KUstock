@@ -118,6 +118,9 @@ def stock(request):
             # print(f"temp : {temp} \n\n\n")
             # print(f"len(data_head) : {len(data_head)}")
             for i in range(12):
+                if i==4:
+                    temp[i]=temp[i].split("%")[0]
+                    # print(f"{type(temp[i])} |||| {temp[i]}")
                 if i!=1 and temp[i]!='N/A':
                     temp[i]=temp[i].replace(",","")
                     # print(f"temp는 {temp[i]}")
@@ -162,7 +165,7 @@ def stock(request):
         stocks = sorted(stocks,key=lambda x:x[4],reverse=True)
         i=0
         for stock in stocks:
-            ans+=f"{i+1}. {stock[1]} | {int(stock[2])}원 | {stock[4]} \n"
+            ans+=f"{i+1}. {stock[1]} | {int(stock[2])}원 | +{stock[4]}% \n"
             i+=1
             if i==5:
                 break
