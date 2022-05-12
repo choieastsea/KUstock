@@ -214,8 +214,42 @@ def stock(request):
     elif success == "theme":
         # /stock theme <theme> 명령어 <theme>정보는 theme 변수에 저장됨
         ans=""
-        
-        return_string = ans
+        ans+=f"{datetime.today().date()} {theme} 정보\n"
+        for pagenum in range(1,8):
+            theme_url = "https://finance.naver.com/sise/theme.nhn?field=name&ordering=asc&page={pagenum}".format(pagenum=pagenum)
+            resp = requests.get(theme_url)
+            soup = BeautifulSoup(resp.content, "html.parser")
+            thema_num = 0
+            # print(soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type1"))
+            find_thema = False
+            while thema_num < 50:
+                try:
+                    thema_num += 1
+                    board_date = soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type1 > a")[0]
+                    thema = board_date.text.strip()
+                    if thema==theme:
+                        find_thema=True
+                        thema_rate = soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type2 > span")[0].get_text()
+                        # print(f"thema_rate : {thema_rate.get_text().strip()}")
+                        ans+=(f"등락률 : {thema_rate}\n주요 종목 : ")
+                        linkUrl = 'https://finance.naver.com' + board_date['href']
+                        linkResp = requests.get(linkUrl)
+                        linkSoup = BeautifulSoup(linkResp.content, "html.parser")   
+                        for i in range(10):
+                            link_board_date = linkSoup.select("#contentarea > div:nth-child(5) > table > tbody > tr:nth-child("+str(i+1)+") > td.name > div > a")[0].text.strip()
+                            if i==9:
+                                ans+=(f"{link_board_date} ")
+                            else:
+                                ans+=(f"{link_board_date}, ")
+                        print(ans)
+                        return_string = ans
+                except Exception as e:
+                    continue
+        if not find_thema:
+            ans+="해당하는 테마를 찾지 못하였습니다."
+            return_string=ans
+        # print(ans)
+        # return_string = ans
     elif success == "stock":
         # /stock state <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
         ans=""
