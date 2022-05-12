@@ -98,22 +98,52 @@ def stock(request):
     res=requests.get(jusik_url)
     soup=BeautifulSoup(res.text,'lxml')
     stock_head = soup.find("thead").find_all("th")
-    data_head=[head.get_text() for head in stock_head] # ['N', '종목명', '현재가', '전일비', '등락률', '액면가', '시가총액', '상장주식수', '외국인비율', ' '거래량', 'PER', 'ROE', '토론실']
+    data_head=[head.get_text() for head in stock_head] 
+    # data_head : [0'N', 1'종목명', 2'현재가', 3'전일비', 4'등락률', 5'액면가', 6'시가총액', 7'상장주식수', 8'외국인비율', ' 9'거래량', 10'PER', 11'ROE', 12'토론실']
     stock_list=soup.find("table",attrs={"class":"type_2"}).find("tbody").find_all("tr")
+    stocks=[]
     for stock in stock_list:
         if len(stock)>1:
-            print(stock.get_text().split())
+            # print(stock.get_text().split())
+            temp = stock.get_text().split()
+            for i in range(12):
+                if i!=1 and i!=4 and temp[i]!='N/A':
+                    temp[i]=temp[i].replace(",","")
+                    # print(f"temp는 {temp[i]}")
+                    temp[i]=float(temp[i])
+                    if i==9:
+                        temp[i]=int(temp[i])
+                    # print(f"{i}번 {temp[i]} {type(temp[i])}\n")
+                # print(f"temp값은 {temp}")
+            stocks.append(temp)
     if success == "deal":
         # /stock top deal 명령어
         ans=""
-        ans+=f"{datetime.today()}\n"
-        ans+=str(data_head)
-        # print(ans)
+        ans+=f"{datetime.today().date()} 거래대금 상위 top5 종목\n"
+        stocks = sorted(stocks,key=lambda x:x[9],reverse=True)
+        i=0
+        for stock in stocks:
+            ans+=f"{i+1}. {stock[1]} | {stock[2]}원 | {stock[9]} 주\n"
+            i+=1
+            if i==5:
+                break
+        # ans+=str(stocks)
+        print(ans)
         return_string = ans
     elif success == "sum":
         # /stock top sum 명령어
-
-        return_string = "deal"
+        ans=""
+        ans+=f"{datetime.today().date()} 상승률 상위 top5 종목\n"
+        stocks = sorted(stocks,key=lambda x:x[9],reverse=True)
+        i=0
+        for stock in stocks:
+            ans+=f"{i+1}. {stock[1]} | {stock[2]}원 | {stock[9]} 주\n"
+            i+=1
+            if i==5:
+                break
+        # ans+=str(stocks)
+        print(ans)
+        return_string = ans
     elif success == "rise":
         # /stock top rise 명령어
 
