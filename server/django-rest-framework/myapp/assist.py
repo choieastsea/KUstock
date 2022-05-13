@@ -1,7 +1,88 @@
 from myapp.models import Stock
 from myapp.models import User
+from jamo import h2j, j2hcj
 # myapp::views.py에 필요한 함수에 대한 파일
 class assist:
+
+    def recommend(self, ustock:str, n:int):
+        """
+        해당 종목이 없는 경우, 유사한 주식명 추천하기 위해 사용하는 함수
+        parm : {ustock : 사용자의 잘못된 종목명 문자열, n: 출력 종목 수}
+        return : 이와 가장 유사한 n개의 문자열
+        (levenshtein 함수, jamo의 h2j 함수를 이용함)
+        """
+        print(f"<<assist::recommend>> : parm: {ustock}, {n}")
+        # 1. 한글 분해하여 1차원 배열로 저장
+        ustock = ustock.strip()
+        ustock_mod = self.decompKor(ustock)
+        print(ustock_mod)
+        # 2. 입력 문자열과 다른 종목명들의 레벤슈타인 거리 계산
+        stocks = Stock.objects.all().values("sname")
+        edit_distance_dict = {}
+        for i in range(len(stocks)):
+            dstock = stocks[i]['sname'] #db에 있는 종목명 정보
+            dstock_mod = self.decompKor(dstock) 
+            # print(f"{stocks[i]['sname']}")
+            edit_distance = self.levenshtein(ustock_mod, dstock_mod)
+            # 3. 입력 문자열 길이 == 편집거리인 경우, 다 다르다는 의미이므로, 매우 큰수로 초기화
+            if len(ustock_mod) <= edit_distance:
+                edit_distance = 100000
+            edit_distance_dict[i] = edit_distance   
+            # 4. 해당 문자열이 포함된 종목의 경우, 편집 거리의 가산점을 줘보자! (optional)
+            if ustock in dstock:
+                # edit_distance_dict[i] -= (len(ustock_mod)-len(ustock)) -> 이런 가산점 문제 있음. 걍 0 주자
+                edit_distance_dict[i] = 0
+        #5. 편집 거리 순으로 정렬 sort by value(item[1])
+        edit_distance_dict = dict(sorted(edit_distance_dict.items(), key=lambda item: item[1]))
+        return_list = []
+        edit_distance_list = list(edit_distance_dict.keys())
+        for i in range(n):
+            return_list.append(stocks[edit_distance_list[i]]['sname'])
+        return return_list
+
+    def decompKor(word:str):
+        """
+        한글 문자열 분해한 결과를 리턴
+        '삼성전자' => 'ㅅㅏㅁ ㅅㅓㅇ ㅈㅓㄴ ㅈㅏ'
+        """
+        word = word.upper() # 영어인 경우, 일단 대문자로 바꿔줘야함
+        mod_str = ""
+        for i in range(len(word)):
+            mod_str += f"{j2hcj(h2j(word[i]))} "
+        mod_str = mod_str.strip()
+        return mod_str
+
+    def levenshtein(src: str, tar: str):
+        """
+        src와 tar 문자열의 편집거리를 계산한다.
+        'cat' <-> 'call'은 2의 편집거리를 갖는다.
+        한글의 경우, 삼성전자 ->'ㅅㅏㅁ ㅅㅓㅇ ㅈㅓㄴ ㅈㅏ'와 삼성전기 -> 'ㅅㅏㅁ ㅅㅓㅇ ㅈㅓㄴ ㄱㅣ'를 비교하면 편집거리는 2가 리턴될 것이다.
+        """
+        # print(f"<<assist::levenshtein>> : parm: {src}, {tar}")
+        #1. 2차원 0으로 초기화된 배열 생성
+        D = [[0 for _ in range(len(src) + 1)] for _ in range(len(tar) + 1)]
+        #2. 0번 index 초기화
+        for i in range(len(tar)+1):
+            D[i][0] = i
+        for i in range(len(src)+1):
+            D[0][i] = i
+        #3. for 문 돌리면서 edit distance update (replace, insert, delete 중 최소를 찾아서)
+        # print(f"length of D : {len(D)}")
+        # print(f"length of D[i] : {len(D[0])}")
+        for i in range(1, len(D)):
+            for j in range(1, len(D[i])):
+                replace = D[i-1][j-1]
+                insert = D[i-1][j]
+                delete = D[i][j-1]
+                min_before = min(replace, insert, delete)
+                if src[j-1] == tar[i-1]:
+                    D[i][j] = min_before
+                else:
+                    D[i][j] = min_before + 1
+        # print(D)
+        # print(f"<<assist::levenshtein>> : return: {D[len(tar)][len(src)]}")
+        return D[len(tar)][len(src)]
+        
     def codeToword(code):
         """
         문자열의 종목코드가 오면 종목명으로 반환한다

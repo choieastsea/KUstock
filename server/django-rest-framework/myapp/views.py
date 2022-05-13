@@ -12,7 +12,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from myapp.member import Member
-#models import
 from myapp import models
 from myapp.models import User
 from myapp.assist import assist
@@ -20,14 +19,14 @@ from myapp.models import Trade
 from myapp.api import getStockPrice
 from myapp.models import Stock
 
-# class UserSerializer(serializers.ModelSerializer):
-#     """User Model Serializer"""
-#     class Meta:
-#         model = models.User # models.User와 연결
-#         fields = '__all__' # 모든 필드 출력하기
-
-# Create your views here.
-# model 객체 이용하여 view에 보여주도록 하자.
+def stock_recommend(request):
+    # stock_name = request.GET('name')
+    stock_name = "hdc현대"
+    return_str = assist.recommend(assist,stock_name, 5)
+    print(return_str)
+    return JsonResponse({
+        "data" : return_str
+    })
 def check(request):
     creon = Creon()
     it = creon.getCurPrice("A005930")
