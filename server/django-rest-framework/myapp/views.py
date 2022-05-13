@@ -485,17 +485,18 @@ def community(request):
                     jusik_table.append(trade.code)
         print("jusik table : ",end="")
         print(jusik_table)
-        temp="          "
-        temp+=req_uname
-        temp+=" 님의 자산 정보입니다.\n"
-        temp+=f"모의 자산 잔액 : {req_user.seed}\n"
-        temp+=f"수익금 : {req_user.profit}\n"
-        temp+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
-        temp+="===================\n"
+        return_string="          "
+        return_string+=req_uname
+        return_string+=" 님의 자산 정보입니다.\n"
+        return_string+=f"모의 자산 잔액 : {req_user.seed}\n"
+        return_string+=f"수익금 : {req_user.profit}\n"
+        return_string+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
+        return_string+="===================\n"
         # temp+="가지고 있는 종목 정보"
-        total_buy=0
-        total_count=0
         for jusik in jusik_table:
+            total_buy=0
+            total_count=0
+            temp = ""
             jusiks = Trade.objects.filter(uid=req_user.uid,code=jusik)
             temp+="( "
             temp+=assist.codeToword(jusik) # 코드명 이름변경 필요
@@ -514,7 +515,7 @@ def community(request):
                 print(f"avg_buy :  total_buy : {total_buy} total_count : {total_count}")
                 #total_buy == 0 일때 오류메시지
             if total_count==0:
-                return_string = temp
+                return_string += temp
             else:
                 avg_buy = total_buy/total_count
                 print(f"avg_buy : {avg_buy} total_buy : {total_buy} total_count : {total_count}")
@@ -531,7 +532,7 @@ def community(request):
                 temp+=str(current_price)+"원 / "
                 temp+=str(total_count) + "개 ) \n"
                 print(temp)
-                return_string = temp
+                return_string += temp
     else:
         return_string = success
 
