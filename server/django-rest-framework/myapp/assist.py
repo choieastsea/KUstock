@@ -75,7 +75,7 @@ class assist:
         return [success, stock_code, count]
 
 
-    def parseCommunity(msg):
+    def parseCommunity(msg,room):
         msg_split = msg.split(" ")
         success = ""
         req_user = ""
@@ -87,8 +87,10 @@ class assist:
                     success = "/community rank 의 형태로 입력되었는지 확인해주세요.\n"
             else:
                 msg_user = msg.split("/community ")
+                print(msg_user)
+                print(msg_user[1])
                 # 해당 user가 존재하는지 확인하는 메소드 필요
-                req_user = User.objects.filter(uname=msg_user[1])
+                req_user = User.objects.filter(uname=msg_user[1],gid = room)
                 if req_user.count() == 1:
                     success = "user"
                     req_user = req_user.first().uname

@@ -70,7 +70,7 @@ def kustock(request):
         user = User.objects.filter(uname=sender, gid = room)
         if user.count() != 1:
             User.objects.create(gid=room,uname=sender,seed=seed, profit = 0)
-            return_string = "채티방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
+            return_string = "채팅방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
         else:
             return_string = "이미 "+sender+"유저가 존재합니다."
     else:
@@ -349,7 +349,7 @@ def trade(request):
     return_string = ""
     # 사용자 조회 
     if success == "buy":
-        user = User.objects.filter(uname=uname)
+        user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
             return_string = f"{uname}에 해당하는 사용자가 없습니다"
         # elif:
@@ -383,7 +383,7 @@ def trade(request):
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
     elif success == "sell":
-        user = User.objects.filter(uname=uname)
+        user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
             return_string = "해당하는 사용자가 없습니다"
         # elif:
@@ -443,7 +443,7 @@ def community(request):
     # room, id 인자 획득
     uname = request.GET["id"]
     uroom = request.GET["room"]
-    [success, req_uname] = assist.parseCommunity(request.GET['msg'])
+    [success, req_uname] = assist.parseCommunity(request.GET['msg'],uroom)
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)
@@ -459,7 +459,7 @@ def community(request):
         temp+="======================\n"
         temp+="( 순위 / 이름 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
-        names = User.objects.all()
+        names = User.objects.filter(gid=uroom)
         tmembers=[]
         for name in names:
             tmembers.append([name.uname,name.profit])
@@ -475,7 +475,7 @@ def community(request):
         total_buy=0
         jusik_table = []
         jusiks=""
-        req_user = User.objects.filter(uname=req_uname).first()
+        req_user = User.objects.filter(uname=req_uname,gid=uroom).first()
         #req_user없는 경우 예외처리
         for trade in trades:
             # print(f">>>>>trade.uid : {type(trade.uid.uid)} // req_user: {type(req_user.uid)}")
