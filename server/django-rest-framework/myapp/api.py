@@ -1,28 +1,9 @@
 """
 주식 시세 조회를 위한 api 요청 등을 처리하고, views.py에서 원하는 결과에 맞게 응답하는 함수를 포함한다.
 """
-
-from pathlib import Path
-import os
-import json
-from django.core.exceptions import ImproperlyConfigured
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# https://jinmay.github.io/2019/10/12/django/django-secret-key-management/
-secret_key = os.path.join(BASE_DIR, 'secret.json')
-with open(secret_key) as f:
-    secrets = json.loads(f.read())
-
-def get_env_variable(key):
-    try:
-        return secrets[key]
-    except KeyError:
-        error_msg = f"Set the {key} environment variable"
-        raise ImproperlyConfigured(error_msg)
-
-
+from myproject.settings import get_env_variable
 import requests
+
 
 serviceKey = get_env_variable("api_serviceKey")
 rootURL = "https://api.odcloud.kr/api/GetStockSecuritiesInfoService/v1/"

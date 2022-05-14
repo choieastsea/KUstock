@@ -29,7 +29,17 @@ class assist:
                 edit_distance = 100000
             edit_distance_dict[i] = edit_distance   
             # 4. 해당 문자열이 포함된 종목의 경우, 편집 거리의 가산점을 줘보자! (optional)
-            if ustock in dstock:
+            flag = 0
+            before = 0
+            for k in range(len(ustock)):
+                char = ustock[k]
+                x=dstock.find(char)
+                if x >= 0 and before <=x:
+                    before = x
+                else:
+                    flag = 1
+                    break
+            if (flag ==0) or (ustock in dstock):
                 # edit_distance_dict[i] -= (len(ustock_mod)-len(ustock)) -> 이런 가산점 문제 있음. 걍 0 주자
                 edit_distance_dict[i] = 0
         #5. 편집 거리 순으로 정렬 sort by value(item[1])
