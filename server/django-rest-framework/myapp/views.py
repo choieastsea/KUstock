@@ -45,7 +45,7 @@ def test(request):
         "room" : request.GET['room'],
         "id" : request.GET['id'],
         "msg" : request.GET['msg'],
-        "data" : "/test 테스트 중 입니다."
+        "data" : "/test 테스트 중 입니다.\n"
         })
 def createUser(request):
     if request.method == 'GET':
@@ -562,7 +562,7 @@ def help(request):
     else:
         if req_str[1] == "trade":
             return JsonResponse({
-                "data" : "trad buy &lt;stock&gt; &lt;count&gt; : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매수 요청\n"+
+                "data" : "trade buy &lt;stock&gt; &lt;count&gt; : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매수 요청\n"+
                 "trade buy &lt;stock&gt; &lt;count&gt; : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매도 요청\n"+
                 "ex) /trade buy 삼성전자 10 => 삼성전자 주식 10개 구매\n /trade sell 삼성전자 10 => 삼성전자 주식 10개 판매\n"
             })
@@ -594,9 +594,13 @@ def help(request):
             })
         elif req_str[1] == "alarm":
             return JsonResponse({
-                "data" : "Alarm &lt;stock&gt; &lt;time&gt; : \"time\"으로 입력된 시각에 \"stock\"에 해당하는 주식정보 알림\n"+
+                "data" : "alarm &lt;stock&gt; &lt;time&gt; : \"time\"으로 입력된 시각에 \"stock\"에 해당하는 주식정보 알림\n"+
                 "Alarm on : 알람 on\n"+
                 "Alarm off : 알람 off\n"
+            })
+        elif req_str[1] == "time":
+            return JsonResponse({
+                "data" : "/kustock : 서버에 사용자 정보를 생성해주는 명령어입니다.\n trade, community 등의 명령어를 사용하기 위해서 필요합니다.\n"
             })
         elif req_str[1] == "theme":
             return JsonResponse({

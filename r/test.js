@@ -36,7 +36,9 @@ function response(
       var url = "https://4063-222-109-202-99.jp.ngrok.io";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text());
-      replier.reply(str.data);
+      var rpy_msg = sender+"님의 명령어 "+msg+" 실행결과 입니다.\n"
+      rpy_msg += str.data.substring(0,str.data.length-2)
+      replier.reply(rpy_msg);
     }else{
       replier.reply("등록되지않은 명령어입니다.");
     }
