@@ -155,10 +155,11 @@ class assist:
         else:
             # 주식명이 잘못된 경우
             ustock_name = msg_split[2].strip()
-            recommended_arr = self.recommend(ustock_name, 5)
-            success = "주식 명을 확인해주세요.\n 유사종목:"
+            recommended_arr = self.recommend(self,ustock_name, 5)
+            success = f"'{ustock_name}'에 해당하는 종목이 없습니다."
+            success += " 주식 명을 확인해주세요.\n 유사종목: "
             for word in recommended_arr:
-                success += f'{word}\t'
+                success += f'{word} '
         count = 0
         # <count> 인자 확인
         try:
