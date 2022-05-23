@@ -340,7 +340,7 @@ def trade(request):
     uname = request.GET["id"]
     uroom = request.GET["room"]
     # msg에서 명령어 파싱
-    [success, stock_code, count] = assist.parseTrade(request.GET['msg'])
+    [success, stock_code, count] = assist.parseTrade(assist, request.GET['msg'])
     # [success, stock_code, count] = ["buy","000020",2]
     # 파싱 테이스
     print("success:"+ success+", stock_code : "+str(stock_code)+", count:"+ str(count))
