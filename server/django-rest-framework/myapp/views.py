@@ -173,7 +173,7 @@ def chart(request):
         return_string = success
 
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string})
+    return JsonResponse({"status" : "200-OK", "data" : return_string +"\n"})
 
 
 def stock(request):
@@ -321,7 +321,7 @@ def stock(request):
     else:
         return_string = success
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string})    
+    return JsonResponse({"status" : "200-OK", "data" : return_string+"\n"})    
     
 def trade(request):
     """

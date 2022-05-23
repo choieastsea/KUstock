@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
+from myapp.check import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +32,8 @@ def get_env_variable(key):
 
 SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
 
+# init creon
+#creon = Creon()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

@@ -5,6 +5,7 @@ import threading
 import pythoncom
 import win32event
 
+global creon
 StopEvent = win32event.CreateEvent(None, 0, 0, None)
 
 class CpEvent:
@@ -60,6 +61,7 @@ def MessagePump(timeout):
             raise RuntimeError("unexpected win32wait return value")
 
 class Creon:
+    check = "check"
     def __init__(self):
         pythoncom.CoInitialize()
         self.objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")
@@ -93,8 +95,10 @@ class Creon:
         objReply = CpCurReply(self.objStockMst)
         objReply.Subscribe()
 
-        self.objStockMst.SetInputValue(0, code)  
+        self.objStockMst.SetInputValue(0, code) 
+        
         self.objStockMst.Request()
+        print(self.objStockMst.GetDibStatus())
         MessagePump(10000)
 
         rqStatus = self.objStockMst.GetDibStatus()
