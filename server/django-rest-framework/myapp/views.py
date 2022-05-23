@@ -378,7 +378,7 @@ def trade(request):
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
                     more_stock = user.seed//price
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능\n"
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed} {stock_code}추가{more_stock}주 매수 가능\n"
                 else:
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})\n"
