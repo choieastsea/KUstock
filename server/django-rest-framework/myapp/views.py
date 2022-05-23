@@ -157,7 +157,7 @@ def chart(request):
         print(return_string)
     elif success == "individual":
         # /chart <stock> inform 명령어
-        return_string = "개인 매매량은 지원해주지 않습니다."
+        return_string = "개인 매매량은 지원해주지 않습니다.\n"
     elif success == "foreign":
         # /chart <stock> inform 명령어
         url = "https://finance.naver.com/item/frgn.naver?code=" +str(stock_code[1:])
@@ -350,7 +350,7 @@ def trade(request):
     if success == "buy":
         user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
-            return_string = f"{uname}에 해당하는 사용자가 없습니다"
+            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n"
         # elif:
         # 해당하는 room이 없는 경우
         # elif:
@@ -364,7 +364,7 @@ def trade(request):
             #코드 조회
             price = getStockPrice(stock_code[1:])
             if price == -1:
-                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다"
+                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다.\n"
             else:    
                 user.seed -= int(price)*count
                 if user.seed >= 0:
@@ -378,14 +378,14 @@ def trade(request):
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
                     more_stock = user.seed//price
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능"
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능\n"
                 else:
                     user.seed += int(price)*count
-                    return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
+                    return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})\n"
     elif success == "sell":
         user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
-            return_string = "해당하는 사용자가 없습니다"
+            return_string = "해당하는 사용자가 없습니다.\n"
         # elif:
         # 해당하는 room이 없는 경우
         # elif:
@@ -396,7 +396,7 @@ def trade(request):
             user = user.first()
             price = getStockPrice(stock_code[1:])
             if price == -1:
-                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다"
+                return_string = f"{assist.codeToword(stock_code)}에 해당하는 종목이 없습니다.\n"
             else:
                 trades = Trade.objects.filter(uid = user.uid, code = stock_code)
                 current_stock_count = 0
@@ -409,7 +409,7 @@ def trade(request):
                 print(f"현재 남은 주식 개수 : {current_stock_count}")
                 if current_stock_count<count:
                     # trade에 buy한 내역이 없는 경우 
-                    return_string = f"{assist.codeToword(stock_code)} 종목을 {count}주 이상 소유하고 있지 않습니다"
+                    return_string = f"{assist.codeToword(stock_code)} 종목을 {count}주 이상 소유하고 있지 않습니다.\n"
                 else:
                     # 정상 매도 case
                     user.seed+=int(price)*count
@@ -434,7 +434,7 @@ def trade(request):
                             code=stock_code)
                     # User.objects.update()
                     print(user.profit)
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능"            
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능\n"            
     else:
         return_string = success
     print(return_string)
@@ -598,7 +598,7 @@ def help(request):
                 "Alarm on : 알람 on\n"+
                 "Alarm off : 알람 off\n"
             })
-        elif req_str[1] == "time":
+        elif req_str[1] == "kustock":
             return JsonResponse({
                 "data" : "/kustock : 서버에 사용자 정보를 생성해주는 명령어입니다.\n trade, community 등의 명령어를 사용하기 위해서 필요합니다.\n"
             })
