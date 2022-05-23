@@ -124,7 +124,7 @@ def chart(request):
                     sign = '-'
                 return_string+= f"{lst[0]}({sign}{lst[3]}원, {lst[5]}%)\n"
             elif tr[i].text.split()[0] =="거래량":
-                return_string +=f"거래량({tr[i].text.split()[1]}주)"
+                return_string +=f"거래량({tr[i].text.split()[1]}주)\n"
         print(return_string)
 
     elif success == "institutional":
@@ -570,7 +570,7 @@ def help(request):
             return JsonResponse({
                 "data" : "community rank : 전체 사용자 수익률 랭킹 출력\n"+
                 "community &lt;user&gt; : 특정 사용자 보유 종목 및  수익률 출력\n"+
-                "ex) /community rank => 전체 사용자 랭킹 출력\n /community "+uname+" => "+uname+"님의 보유 종목 및 수익률 출력"
+                "ex) /community rank => 전체 사용자 랭킹 출력\n /community "+uname+" => "+uname+"님의 보유 종목 및 수익률 출력\n"
             })
         elif req_str[1] == "stock":
             return JsonResponse({
@@ -580,7 +580,7 @@ def help(request):
                 "stock theme &lt;theme&gt; : \"theme\"에 해당하는 테마 정보 출력\n"+
                 "stock state &lt;stock&gt; : \"stock\"에 해당하는 기업의 재무제표 출력\n"+
                 "ex) /stock top deal \n /stock state 삼성전자 => 삼성전자의 재무제표 출력\n"+
-                " /stock theme 2차전지 => 2차전지 관련 테마주의 정보 출력"
+                " /stock theme 2차전지 => 2차전지 관련 테마주의 정보 출력\n"
             })
         elif req_str[1] == "chart":
             return JsonResponse({
@@ -604,27 +604,27 @@ def help(request):
             })
         elif req_str[1] == "theme":
             return JsonResponse({
-                "data" : "키움증권 API의 GetThemeGroupList 메소드에서 제공하는 테마그룹명을 뜻합니다."
+                "data" : "키움증권 API의 GetThemeGroupList 메소드에서 제공하는 테마그룹명을 뜻합니다.\n"
             })
         elif req_str[1] == "stock":
             return JsonResponse({
-                "data" : "주식 종목을 뜻합니다. KRX 정보데이터 시스템에서 한글종목 약명에 해당하는 값으로만 입력될수있습니다."
+                "data" : "주식 종목을 뜻합니다. KRX 정보데이터 시스템에서 한글종목 약명에 해당하는 값으로만 입력될수있습니다.\n"
             })
         elif req_str[1] == "function":
             return JsonResponse({
-                "data" : "사용자가 입력하는 명령어를 뜻합니다."
+                "data" : "사용자가 입력하는 명령어를 뜻합니다.\n"
             })
         elif req_str[1] == "count":
             return JsonResponse({
-                "data" : "몇 개인지를 뜻합니다. 자연수만 입력될수있습니다."
+                "data" : "몇 개인지를 뜻합니다. 자연수만 입력될수있습니다.\n"
             })
         elif req_str[1] == "user":
             return JsonResponse({
-                "data" : "사용자의 이름을 뜻합니다."
+                "data" : "사용자의 이름을 뜻합니다.\n"
             })
         elif req_str[1] == "time":
             return JsonResponse({
-                "data" : "시간을 뜻합니다. 입력할 때, xx:xx (x는 0~9의 자연수)의 형태로 입력하며, 24시간제 형태로 입력합니다."
+                "data" : "시간을 뜻합니다. 입력할 때, xx:xx (x는 0~9의 자연수)의 형태로 입력하며, 24시간제 형태로 입력합니다.\n"
             })
 
 def dbInit(request):
