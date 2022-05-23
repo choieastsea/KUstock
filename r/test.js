@@ -37,7 +37,7 @@ function response(
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text()).data;
       var rpy_msg = sender+"님의 명령어 "+msg+" 실행결과 입니다.\n"
-      rpy_msg += str.substring(0,str.length-2);
+      rpy_msg += str.substring(0,str.length-1);
       replier.reply(rpy_msg);
     }else{
       replier.reply("등록되지않은 명령어입니다.\n /help를 통해 명령어를 확인해주세요.");
