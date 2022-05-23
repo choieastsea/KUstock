@@ -40,7 +40,7 @@ function response(
       rpy_msg += str.data.substring(0,str.data.length-2)
       replier.reply(rpy_msg);
     }else{
-      replier.reply("등록되지않은 명령어입니다.");
+      replier.reply("등록되지않은 명령어입니다.\n /help를 통해 명령어를 확인해주세요.");
     }
   }
 }
