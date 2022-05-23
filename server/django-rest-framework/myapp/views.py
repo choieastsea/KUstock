@@ -168,7 +168,7 @@ def chart(request):
         tr = soup.select('#content > div.section.inner_sub > table.type2>tr:nth-child(5)>td>span')
         for i in range(len(tr)-1):
             if i==6:
-                return_string += f"외국인 순 매매량 : {tr[i].text}"
+                return_string += f"외국인 순 매매량 : {tr[i].text}\n"
     else:
         return_string = success
 
@@ -287,7 +287,7 @@ def stock(request):
                         for i in range(10):
                             link_board_date = linkSoup.select("#contentarea > div:nth-child(5) > table > tbody > tr:nth-child("+str(i+1)+") > td.name > div > a")[0].text.strip()
                             if i==9:
-                                ans+=(f"{link_board_date} ")
+                                ans+=(f"{link_board_date} \n")
                             else:
                                 ans+=(f"{link_board_date}, ")
                         print(ans)
@@ -345,7 +345,7 @@ def trade(request):
     # 파싱 테이스
     print("success:"+ success+", stock_code : "+str(stock_code)+", count:"+ str(count))
 
-    return_string = ""
+    return_string = "\n"
     # 사용자 조회 
     if success == "buy":
         user = User.objects.filter(uname=uname,gid=uroom)
@@ -406,7 +406,7 @@ def trade(request):
                     else:
                         current_stock_count -= trade.count
                     
-                print(f"현재 남은 주식 개수 : {current_stock_count}")
+                print(f"현재 남은 주식 개수 : {current_stock_count}\n")
                 if current_stock_count<count:
                     # trade에 buy한 내역이 없는 경우 
                     return_string = f"{assist.codeToword(stock_code)} 종목을 {count}주 이상 소유하고 있지 않습니다.\n"
