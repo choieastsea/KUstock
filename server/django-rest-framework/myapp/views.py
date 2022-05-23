@@ -377,7 +377,8 @@ def trade(request):
                         count=count,
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed}"
+                    more_stock = user.seed//price
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능"
                 else:
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})"
@@ -422,6 +423,7 @@ def trade(request):
                     avg_buy = total_buy/current_stock_count
                     profit = (price-avg_buy)*count
                     user.profit +=profit
+                    more_stock = user.seed//price
                     user.save()
                     Trade.objects.create(
                             uid=user,
@@ -432,7 +434,7 @@ def trade(request):
                             code=stock_code)
                     # User.objects.update()
                     print(user.profit)
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed}"            
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능"            
     else:
         return_string = success
     print(return_string)
