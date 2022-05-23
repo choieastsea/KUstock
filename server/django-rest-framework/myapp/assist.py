@@ -123,7 +123,7 @@ class assist:
             print(f"<<assist::codeToword>> : return: {stock.code}")
             return stock.code
 
-    def parseTrade(msg):
+    def parseTrade(this,msg):
         """
         string type의 msg를 받아, [success: 메시지 문법 충족 여부, uname: 사용자 이름, stock_code: 매수 종목 코드, count: 매수량]를 리턴
         문법 오류 발생시, success에다가 문자열 실어주면 될듯
@@ -153,7 +153,12 @@ class assist:
         if stock_code.count() == 1:
             stock_code = stock_code.first().code
         else:
-            success = "주식 명을 확인해주세요.\n"
+            # 주식명이 잘못된 경우
+            ustock_name = msg_split[2].strip()
+            recommended_arr = this.recommend(ustock_name, 5)
+            success = "주식 명을 확인해주세요.\n 유사종목:"
+            for word in recommended_arr:
+                success += f'{word}\t'
         count = 0
         # <count> 인자 확인
         try:
