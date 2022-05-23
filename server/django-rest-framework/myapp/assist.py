@@ -240,6 +240,7 @@ class assist:
                 stock_code = stock_code.first().code
             else:
                 success = "주식 명을 확인해주세요.\n"
+                return [success,stock_code]
             if len(msg_split) == 2:
                 success = "stock"
             elif len(msg_split) == 3:
