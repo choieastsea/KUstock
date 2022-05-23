@@ -45,7 +45,7 @@ def test(request):
         "room" : request.GET['room'],
         "id" : request.GET['id'],
         "msg" : request.GET['msg'],
-        "data" : "/test 테스트 중 입니다."
+        "data" : "/test 테스트 중 입니다.\n"
         })
 def createUser(request):
     if request.method == 'GET':
