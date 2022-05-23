@@ -71,7 +71,7 @@ def kustock(request):
             User.objects.create(gid=room,uname=sender,seed=seed, profit = 0)
             return_string = "채팅방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
         else:
-            return_string = "이미 "+sender+"유저가 존재합니다."
+            return_string = "이미 "+sender+"유저가 존재합니다.\n"
     else:
         return_string = "명령어가 /kustock 으로 입력되었는지 확인해주세요.\n"
 
