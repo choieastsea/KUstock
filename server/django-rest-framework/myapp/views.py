@@ -264,13 +264,13 @@ def stock(request):
         # /stock theme <theme> 명령어 <theme>정보는 theme 변수에 저장됨
         ans=""
         ans+=f"{datetime.today().date()} {theme} 정보\n"
+        find_thema = False
         for pagenum in range(1,8):
             theme_url = "https://finance.naver.com/sise/theme.nhn?field=name&ordering=asc&page={pagenum}".format(pagenum=pagenum)
             resp = requests.get(theme_url)
             soup = BeautifulSoup(resp.content, "html.parser")
             thema_num = 0
             # print(soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type1"))
-            find_thema = False
             while thema_num < 50:
                 try:
                     thema_num += 1
@@ -295,7 +295,7 @@ def stock(request):
                 except Exception as e:
                     continue
         if not find_thema:
-            ans+="해당하는 테마를 찾지 못하였습니다."
+            ans+="해당하는 테마를 찾지 못하였습니다.\n"
             return_string=ans
         # print(ans)
         # return_string = ans
