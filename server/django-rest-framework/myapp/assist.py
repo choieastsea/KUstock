@@ -155,11 +155,12 @@ class assist:
         else:
             # 주식명이 잘못된 경우
             ustock_name = msg_split[2].strip()
-            recommended_arr = self.recommend(self,ustock_name, 5)
+            recommended_arr = self.recommend(self,ustock_name, 3)
             success = f"'{ustock_name}'에 해당하는 종목이 없습니다."
             success += " 주식 명을 확인해주세요.\n 유사종목: "
             for word in recommended_arr:
                 success += f'{word} '
+            success +='\n'
         count = 0
         # <count> 인자 확인
         try:
@@ -200,12 +201,11 @@ class assist:
 
         return [success, req_user]
     
-    def parseStock(msg):
+    def parseStock(self, msg):
         msg_split = msg.split(" ")
         success = ""
         stock_code = ""
         theme = ""
-
         if len(msg_split) == 3:
             if msg_split[1] == "top":
                 if msg_split[2] == "deal":
@@ -226,7 +226,13 @@ class assist:
                 if stock_code.count() == 1:
                     stock_code = stock_code.first().code
                 else:
-                    success = "주식 명을 확인해주세요.\n"
+                    ustock_name = msg_split[2].strip()
+                    recommended_arr = self.recommend(self,ustock_name, 3)
+                    success = f"'{ustock_name}'에 해당하는 종목이 없습니다."
+                    success += " 주식 명을 확인해주세요.\n 유사종목: "
+                    for word in recommended_arr:
+                        success += f'{word} '
+                    success +='\n'
             else:
                 success = "/stock [top/theme/state] 로 시작하며 입력되었는지 확인해주세요.\n"
         else:
