@@ -77,6 +77,28 @@ def kustock(request):
 
     return JsonResponse({"status" : "200-OK", "data" : return_string})   
 
+def tutorial(request):
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    check = request.GET['msg'].split(" ")
+    return_string = ""
+    
+    if len(check) == 1:
+        return_string = "tutorial check\n"
+        user = User.objects.filter(uname=uname,gid=uroom)
+        if user.count() != 1:
+            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
+        else:
+            user = user.first()
+            if user.status == 0:
+                return_string = "kustock의 tutorial를 시작합니다.\n"
+
+    else:
+        return_string = "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
+
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
+
 def chart(request):
     # msg에서 명령어 파싱
     [success, stock_code] = assist.parseChart(request.GET['msg'])
@@ -350,7 +372,7 @@ def trade(request):
     if success == "buy":
         user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
-            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n"
+            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
         # elif:
         # 해당하는 room이 없는 경우
         # elif:
@@ -385,7 +407,7 @@ def trade(request):
     elif success == "sell":
         user = User.objects.filter(uname=uname,gid=uroom)
         if user.count() != 1:
-            return_string = "해당하는 사용자가 없습니다.\n"
+            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
         # elif:
         # 해당하는 room이 없는 경우
         # elif:
