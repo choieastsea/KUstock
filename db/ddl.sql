@@ -7,7 +7,8 @@ CREATE TABLE user (
    gid VARCHAR(50) NOT NULL,
    uname VARCHAR(50) NOT NULL,
    seed INTEGER NOT NULL,
-   profit INTEGER NOT NULL
+   profit INTEGER NOT NULL,
+   status INTEGER NOTNULL
 );
 
 -- user

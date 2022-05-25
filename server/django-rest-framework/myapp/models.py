@@ -166,7 +166,8 @@ class User(models.Model):
     uname = models.CharField(max_length=50)
     seed = models.IntegerField()
     profit = models.IntegerField()
-
+    status = models.IntegerField()
+    
     class Meta:
         managed = False
         db_table = 'user'
