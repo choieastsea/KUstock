@@ -91,7 +91,7 @@ def tutorial(request):
         else:
             user = user.first()
             if user.status == 0:
-                return_string = "kustock의 tutorial를 시작합니다.\n"
+                return_string = "kustock의 tutorial를 시작합니다.\n먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
 
     else:
         return_string = "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
