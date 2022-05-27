@@ -634,3 +634,30 @@ def dbInit(request):
     for i,j in lst:
         Stock.objects.create(code=i,sname=j)
     return JsonResponse({"status" : "200-ok"})
+
+def tradeRecord(request) :
+    """
+    localhost:8000/api/record?id=최동해&room=2&msg=/trade record 김경호
+    """
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    [success, req_uname] = assist.parseCommunity(request.GET['msg'],uroom)
+
+    # 파싱 테스트
+    print("success:"+ success+", req_uname:"+req_uname)
+    
+    trades = Trade.objects.all()
+    
+    success = f"{uname} 님의 거래내역입니다. \n"
+    for trade in trades:
+        if(trade.uid.uname == uname) :
+            stock = assist.codeToword(trade.code)
+            buysell = ""
+            if(trade.buysell == "TRUE"):
+                buysell = "매수"
+            else:
+                buysell = "매도"
+            success += " f{trade.date} f{stock} f{buysell} f{trade.price}원 f{trade.count}개 \n"
+
+    return_string = success
+    return JsonResponse({"status" : "200-ok", "data" : return_string})

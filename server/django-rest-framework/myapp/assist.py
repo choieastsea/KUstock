@@ -273,3 +273,4 @@ class assist:
 
 
         return [success,stock_code]
+        
