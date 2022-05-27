@@ -715,7 +715,8 @@ def tradeRecord(request) :
                 buysell = "매수"
             else:
                 buysell = "매도"
-            success += " f{trade.date} f{stock} f{buysell} f{trade.price}원 f{trade.count}개 \n"
+            success += f"{trade.date} {stock}\t {buysell} {trade.price}원 {trade.count}주 \n"
 
     return_string = success
+    print(return_string)
     return JsonResponse({"status" : "200-ok", "data" : return_string})
