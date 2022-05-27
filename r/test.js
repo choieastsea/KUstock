@@ -8,7 +8,8 @@ var map = new Map([
   ["/community",true],
   ["/stock",true],
   ["/chart",true],
-  ["/kustock",true]
+  ["/kustock",true],
+  ["/tutorial",true]
 ]);
 
 /**
