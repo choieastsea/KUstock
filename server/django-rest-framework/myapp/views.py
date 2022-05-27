@@ -68,7 +68,7 @@ def kustock(request):
         sender = request.GET['id']
         user = User.objects.filter(uname=sender, gid = room)
         if user.count() != 1:
-            User.objects.create(gid=room,uname=sender,seed=seed, profit = 0)
+            User.objects.create(gid=room,uname=sender,seed=seed, profit = 0, status = 0)
             return_string = "채팅방 "+room+"에 "+sender+"님의 계정이 생성되었습니다.\n"
         else:
             return_string = "이미 "+sender+"유저가 존재합니다.\n"
@@ -81,25 +81,61 @@ def tutorial(request):
     uname = request.GET["id"]
     uroom = request.GET["room"]
     check = request.GET['msg'].split(" ")
+    msg = request.GET['msg']
+    user = User.objects.filter(uname=uname,gid=uroom)
     return_string = ""
-    
-    if len(check) == 1:
-        return_string = "tutorial check\n"
-        user = User.objects.filter(uname=uname,gid=uroom)
-        if user.count() != 1:
-            return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
-        else:
-            user = user.first()
-            if user.status == 0:
-                return_string = "kustock의 tutorial를 시작합니다.\n먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
-
+    if user.count() != 1:
+        return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
     else:
-        return_string = "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
+        user = user.first()
+        if user.status == 0:
+            if len(check) == 1:
+                user.status = 1
+                user.save()
+                return_string = "kustock의 tutorial를 시작합니다.\n먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
+            else:
+                return_string = "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
+        if user.status == 1:
+            [success, stock_code] = assist.parseChart(request.GET['msg'])
+            if msg == "/chart 삼성전자":
+            # /chart <stock> 명령어
+                result = [[],[]]
+                url = "https://finance.naver.com/item/sise_day.nhn?code="+str(stock_code[1:])
+                headers = {'User-agent': 'Mozilla/5.0'}
+                res = requests.get(url, headers=headers)
+                html = res.content
+                soup = BeautifulSoup(html, 'html.parser')
+                tr = soup.select('table>tr')
+
+                for i in range(1, len(tr)-1):
+                    if tr[i].select('td')[0].text.strip():
+                            result[0].append(tr[i].select('td')[0].text.strip())
+                            result[1].append(int(tr[i].select('td')[1].text.strip().replace("," , "")))
+                return_string += assist.codeToword(stock_code)+'\n'
+                for i in range(7):
+                    dif = round((result[1][i+1] - result[1][i])/(result[1][i+1]) * 100, 2)
+                    return_string+= f"{result[0][i]}  {result[1][i]}원 ({dif}%)\n"
+                user.status = 2
+                user.save()
+                return_string += "이제 /trade buy 삼성전자 10 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
+            else:
+                return_string = "/chart 삼성전자를 입력해주세요.\n"
+
 
 
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
 def chart(request):
+    # tutorial 기능을 위한 메세지 컷
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            return_value = tutorial(request)
+            return return_value
+
     # msg에서 명령어 파싱
     [success, stock_code] = assist.parseChart(request.GET['msg'])
     # 파싱 테스트
