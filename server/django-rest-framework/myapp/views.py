@@ -695,11 +695,11 @@ def dbInit(request):
 
 def tradeRecord(request) :
     """
-    localhost:8000/api/record?id=최동해&room=2&msg=/trade record 김경호
+    localhost:8000/api/record?id=최동해&room=2&msg=/record trade 김경호
     """
     uname = request.GET["id"]
     uroom = request.GET["room"]
-    [success, req_uname] = assist.parseCommunity(request.GET['msg'],uroom)
+    [success, req_uname] = assist.parseRecord(request.GET['msg'],uroom)
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)
