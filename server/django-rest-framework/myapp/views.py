@@ -92,38 +92,73 @@ def tutorial(request):
             if len(check) == 1:
                 user.status = 1
                 user.save()
-                return_string = "kustock의 tutorial를 시작합니다.\n먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
+                return_string += "tutorial를 시작합니다. tutorial에서 나오는 주식 가격이나 사용자 정보는 모두 임의값입니다.\n"
+                return_string += "먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
             else:
-                return_string = "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
+                return_string += "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
         if user.status == 1:
-            [success, stock_code] = assist.parseChart(request.GET['msg'])
             if msg == "/chart 삼성전자":
-            # /chart <stock> 명령어
-                result = [[],[]]
-                url = "https://finance.naver.com/item/sise_day.nhn?code="+str(stock_code[1:])
-                headers = {'User-agent': 'Mozilla/5.0'}
-                res = requests.get(url, headers=headers)
-                html = res.content
-                soup = BeautifulSoup(html, 'html.parser')
-                tr = soup.select('table>tr')
-
-                for i in range(1, len(tr)-1):
-                    if tr[i].select('td')[0].text.strip():
-                            result[0].append(tr[i].select('td')[0].text.strip())
-                            result[1].append(int(tr[i].select('td')[1].text.strip().replace("," , "")))
-                return_string += assist.codeToword(stock_code)+'\n'
-                for i in range(7):
-                    dif = round((result[1][i+1] - result[1][i])/(result[1][i+1]) * 100, 2)
-                    return_string+= f"{result[0][i]}  {result[1][i]}원 ({dif}%)\n"
                 user.status = 2
                 user.save()
+
                 return_string += "이제 /trade buy 삼성전자 10 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
             else:
-                return_string = "/chart 삼성전자를 입력해주세요.\n"
+                return_string += "/chart 삼성전자를 입력해주세요.\n"
+                return_string += "(tutorial 탈출 명령어 /quit)\n"
+        if user.status == 2:
+            if msg == "/trade buy 삼성전자 10":
+                user.status = 3
+                user.save()
+
+                return_string += "삼성전자 10개를 구매했습니다. /community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
+            else:
+                return_string += "/trade buy 삼성전자 10 를 입력해주세요.\n"
+                return_string += "(tutorial 탈출 명령어 /quit)\n"
+        if user.status == 3:
+            if msg == ("/community "+uname):
+                user.status = 4
+                user.save()
+
+                return_string += "/community <user> 명령어를 통해서 자금, 수익금, 보유주식등의 정보를 확인할수있습니다.\n"
+                return_string += "주식 정보를 확인하는동안 삼성전자 가격이 올랐습니다!\n"
+                return_string += "/trade sell 삼성전자 10 를 통해서 구매했던 주식을 판매해보세요.\n"
+            else:
+                return_string += "/community "+uname+" 를 입력해주세요.\n"
+                return_string += "(tutorial 탈출 명령어 /quit)\n"
+        if user.status == 4:
+            if msg == "/trade sell 삼성전자 10":
+                user.status = 5
+                user.save()
+                
+                return_string += "삼성전자 10개를 판매했습니다.\n"
+            else:
+                return_string += "/trade sell 삼성전자 10 를 입력해주세요.\n"
+                return_string += "(tutorial 탈출 명령어 /quit)\n"
 
 
 
     return JsonResponse({"status" : "200-OK", "data" : return_string})
+
+def quit(request):
+    msg = request.GET["msg"].split(" ")
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    return_string = ""
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if len(msg) != 1:
+        return_string = "/quit 으로 입력해주세요.\n"
+        return JsonResponse({"status" : "200-OK", "data" : return_string})
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            user.status = 0
+            user.save()
+            return_string += "tutorial을 종료하였습니다.\n"
+        else:
+            return_string += "tutorial 상태가 아닙니다.\n"
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
+
 
 def chart(request):
     # tutorial 기능을 위한 메세지 컷
@@ -235,6 +270,16 @@ def chart(request):
 
 
 def stock(request):
+    # tutorial
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            return_value = tutorial(request)
+            return return_value
+
     # msg에서 명령어 파싱
     [success, stock_code, theme] = assist.parseStock(assist, request.GET['msg'])
     # 파싱 테스트
@@ -397,6 +442,14 @@ def trade(request):
     # room, id 인자 획득
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    # tutorial
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            return_value = tutorial(request)
+            return return_value
+
     # msg에서 명령어 파싱
     [success, stock_code, count] = assist.parseTrade(assist, request.GET['msg'])
     # [success, stock_code, count] = ["buy","000020",2]
@@ -502,6 +555,13 @@ def community(request):
     # room, id 인자 획득
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    # tutorial
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            return_value = tutorial(request)
+            return return_value
     [success, req_uname] = assist.parseCommunity(request.GET['msg'],uroom)
 
     # 파싱 테스트
@@ -699,6 +759,13 @@ def tradeRecord(request) :
     """
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    # tutorial
+    user = User.objects.filter(uname=uname,gid=uroom)
+    if user.count() == 1:
+        user = user.first()
+        if user.status >= 1:
+            return_value = tutorial(request)
+            return return_value
     [success, req_uname] = assist.parseRecord(request.GET['msg'],uroom)
 
     # 파싱 테스트
