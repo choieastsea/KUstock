@@ -244,7 +244,7 @@ class assist:
             else:
                 success = "/stock [top/theme/state] 로 시작하며 입력되었는지 확인해주세요.\n"
         else:
-            success = "/stock [top/theme/state] [theme/stock] 처럼 3개로 구성하여 명령어가 입력되었는지 확인해주세요.\n"
+            success = "/stock top [deal/sum/rise] 혹은 /stock [theme/state] &lt;theme/stock&gt; 처럼 3개로 구성하여 명령어가 입력되었는지 확인해주세요.\n"
             
 
         return [success,stock_code, theme]

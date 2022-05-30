@@ -510,7 +510,7 @@ def trade(request):
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
                     more_stock = user.seed//price
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료.\n 잔고 : {user.seed} 추가{more_stock}주 매수 가능.\n"
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 (주당 {price}원) 매수 완료.(추가{more_stock}주 매수 가능)\n\n계좌 잔고 : {user.seed}원 \n"
                 else:
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})\n"
@@ -566,7 +566,7 @@ def trade(request):
                             code=stock_code)
                     # User.objects.update()
                     print(user.profit)
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. \n잔고 : {user.seed} 추가 : {more_stock} 매수 가능.\n"          
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 (주당 {price}원) 매도 완료.(추가{more_stock}주 매수 가능)\n\n계좌 잔고 : {user.seed}원\n"          
     else:
         return_string = success
     print(return_string)
@@ -595,7 +595,6 @@ def community(request):
     return_string = ""
     if success == "rank":
         temp="               "
-        temp+="랭킹\n"
         temp+="======================\n"
         temp+="( 순위 / 이름 / 수익금 )\n"
         # 해당 uroom에 있는 모든 사람들의 정보.
@@ -607,7 +606,7 @@ def community(request):
         i=0
         for tmember in tmembers:
             temp+=f"{i+1}"
-            temp+=f" / {tmember[0]} / {tmember[1]}  )\n"
+            temp+=f" / {tmember[0]} / {tmember[1]}  \n"
             i+=1
         print(temp)
         return_string = temp
@@ -625,11 +624,10 @@ def community(request):
                     jusik_table.append(trade.code)
         print("jusik table : ",end="")
         print(jusik_table)
-        return_string="          "
         return_string+=req_uname
-        return_string+=" 님의 자산 정보입니다.\n"
-        return_string+=f"모의 자산 잔액 : {req_user.seed}\n"
-        return_string+=f"수익금 : {req_user.profit}\n"
+        return_string+="님의 자산 정보입니다."
+        return_string+=f"모의 자산 잔액 : {req_user.seed}원\n\n"
+        return_string+=f"수익금 : {req_user.profit}원\n\n"
         return_string+="( 종목명 / 손익(수익률) / 현재가 / 보유수량 )\n"
         return_string+="===================\n"
         # temp+="가지고 있는 종목 정보"
@@ -638,7 +636,7 @@ def community(request):
             total_count=0
             temp = ""
             jusiks = Trade.objects.filter(uid=req_user.uid,code=jusik)
-            temp+="( "
+            temp+="  "
             temp+=assist.codeToword(jusik) # 코드명 이름변경 필요
             temp+=' / '
             # 평단가 구하는 코드    
@@ -661,16 +659,16 @@ def community(request):
                 print(f"avg_buy : {avg_buy} total_buy : {total_buy} total_count : {total_count}")
                 print(f"jusik:{jusik[1:]}")
                 current_price = getStockPrice(jusik[1:]) # 현재가 받아오는 메소드
-                temp += str(current_price-avg_buy) +"("
+                temp += str(int(current_price-avg_buy)*total_count) +"("
                 if avg_buy == 0:
                     temp += "0) / "
                 else:
                     if (current_price-avg_buy)/avg_buy*100<0:
                         temp+="0) / "
                     else:
-                        temp += str(int((current_price-avg_buy)/avg_buy*100)) + "%) / "
+                        temp += str((current_price-avg_buy)/avg_buy*100)[:4] + "%) / "
                 temp+=str(current_price)+"원 / "
-                temp+=str(total_count) + "개 ) \n"
+                temp+=str(total_count) + "개\n"
                 print(temp)
                 return_string += temp
     else:
@@ -687,14 +685,14 @@ def help(request):
     if len(req_str) == 1:
         return JsonResponse({
             "data" : "명령어는 /로 시작하며 앞으로 나오는 "+
-            "&lt;,&gt; 는 실제로 입력하지 않고 사용합니다.\n"+
-            "kustock : trade와 community에 필요한 정보를 생성하는 명령어입니다. \n"+
-            "trade : 주식으로 사고/팔때 사용하는 명령어입니다.\n"+
-            "community : 사용자 랭킹 및 자산정보관련 명령어입니다.\n"+
-            "stock : 주식관련 정보를 요청하는 명령어입니다.\n"+
-            "chart : 주식의 차트를 요청하는 명령어입니다.\n"+
-            "alarm : 지정한 시각에 알림을 설정하는 명령어입니다.\n"+
-            "상세한 명령어의 정보가 필요하시면 아래와 같이 help 명령어를 입력해주세요.\n"+
+            "&lt;,&gt; 는 실제로 입력하지 않고 사용합니다.\n\n"+
+            "kustock : trade와 community에 필요한 정보를 생성하는 명령어입니다.\n\n"+
+            "trade : 주식으로 사고/팔때 사용하는 명령어입니다.\n\n"+
+            "community : 사용자 랭킹 및 자산정보관련 명령어입니다.\n\n"+
+            "stock : 주식관련 정보를 요청하는 명령어입니다.\n\n"+
+            "chart : 주식의 차트를 요청하는 명령어입니다.\n\n"+
+            "alarm : 지정한 시각에 알림을 설정하는 명령어입니다.\n\n"+
+            "상세한 명령어의 정보가 필요하시면 아래와 같이 help 명령어를 입력해주세요.\n\n"+
             "help &lt;function/term&gt; : 'function'의 명령어의 상세 사용법을 출력합니다."+
             "'term'의 용어가 해당하는 의미/사용가능한 문자열을 출력합니다.\n"
         })
