@@ -38,7 +38,7 @@ function response(
       var url = "https://4063-222-109-202-99.jp.ngrok.io";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text()).data;
-      var rpy_msg = sender+"님의 명령어 "+msg+" 실행결과 입니다.\n"
+      var rpy_msg = sender+"님의 명령어 \""+msg+"\" 실행결과 입니다.\n"
       rpy_msg += str.substring(0,str.length-1);
       replier.reply(rpy_msg);
     }else{

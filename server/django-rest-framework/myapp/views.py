@@ -93,7 +93,7 @@ def tutorial(request):
                 user.status = 1
                 user.save()
                 return_string += "tutorial를 시작합니다. tutorial에서 나오는 주식 가격이나 사용자 정보는 모두 임의값입니다.\n"
-                return_string += "먼저 /chart 삼성전자 를 입력해서 삼성전자 주식 가격을 확인해보세요."
+                return_string += "먼저 \"/chart 삼성전자\" 를 입력해서 삼성전자 주식 가격을 확인해보세요."
             else:
                 return_string += "명령어가 /tutorial 로 입력되었는지 확인해주세요.\n"
         if user.status == 1:
@@ -108,7 +108,7 @@ def tutorial(request):
                 return_string += "20xx.xx.23 67900원 (0.15%)\n"
                 return_string += "20xx.xx.20 68000원 (-0.74%)\n"
                 return_string += "20xx.xx.19 67500원 (0.88%)\n"
-                return_string += "이제 /trade buy 삼성전자 10 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
+                return_string += "이제 \"/trade buy 삼성전자 10\" 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
             else:
                 return_string += "/chart 삼성전자를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
@@ -118,7 +118,7 @@ def tutorial(request):
                 user.save()
                 return_string += uname+"님 삼성전자 주식 10주 매수 완료.\n"
                 return_string += "잔고 : 49341000  추가748주 매수 가능\n"
-                return_string += "삼성전자 10개를 구매를 완료했습니다.\n/community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
+                return_string += "삼성전자 10개를 구매를 완료했습니다.\n\"/community "+uname+"\" 을 입력해 구매한 주식을 확인해보세요.\n"
             else:
                 return_string += "/trade buy 삼성전자 10 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
@@ -134,7 +134,7 @@ def tutorial(request):
                 return_string += "(삼성전자/3000.0(4%)/69500원/10개)\n"
                 return_string += "/community <user> 명령어를 통해서 자금, 수익금, 보유주식등의 정보를 확인할수있습니다.\n"
                 return_string += "주식 정보를 확인하는동안 삼성전자 가격이 올랐습니다!\n"
-                return_string += "/trade sell 삼성전자 10 를 통해서 구매했던 주식을 판매해보세요.\n"
+                return_string += "\"/trade sell 삼성전자 10\" 를 통해서 구매했던 주식을 판매해보세요.\n"
             else:
                 return_string += "/community "+uname+" 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
