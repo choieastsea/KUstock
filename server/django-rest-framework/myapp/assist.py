@@ -294,10 +294,10 @@ class assist:
                     req_user = User.objects.filter(uname=msg_user[1],gid = uroom)
                     if req_user.count() == 1:
                         success = "user"
-                        req_user = req_user.first().uname
+                        req_uname = req_user.first().uname
                     else:
                         success = "사용자가 존재하지않습니다.\n"
-                        req_user = ""
+                        req_uname = ""
                 else:
                     success = "/record trade <user> 형태로 입력되었는지 확인해주세요.\n"
             else:

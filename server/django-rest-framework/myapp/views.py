@@ -112,7 +112,7 @@ def tutorial(request):
                 return_string += "이제 \"/trade buy 삼성전자 10\" 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
             else:
                 return_string += "/chart 삼성전자를 입력해주세요.\n"
-                return_string += "(tutorial 탈출 명령어 /quit)\n"
+                return_string += "(튜토리얼 종료 명령어 /quit)\n"
         if user.status == 2:
             if msg == "/trade buy 삼성전자 10":
                 user.status = 3
@@ -122,7 +122,7 @@ def tutorial(request):
                 return_string += "삼성전자 10개를 구매를 완료했습니다.\n\"/community "+uname+"\" 을 입력해 구매한 주식을 확인해보세요.\n"
             else:
                 return_string += "/trade buy 삼성전자 10 를 입력해주세요.\n"
-                return_string += "(tutorial 탈출 명령어 /quit)\n"
+                return_string += "(튜토리얼 종료 명령어 /quit)\n"
         if user.status == 3:
             if msg == ("/community "+uname):
                 user.status = 4
@@ -138,7 +138,7 @@ def tutorial(request):
                 return_string += "\"/trade sell 삼성전자 10\" 를 통해서 구매했던 주식을 판매해보세요.\n"
             else:
                 return_string += "/community "+uname+" 를 입력해주세요.\n"
-                return_string += "(tutorial 탈출 명령어 /quit)\n"
+                return_string += "(튜토리얼 종료 명령어 /quit)\n"
         if user.status == 4:
             if msg == "/trade sell 삼성전자 10":
                 user.status = 0
@@ -149,7 +149,7 @@ def tutorial(request):
                 return_string += "tutorial이 끝났습니다.\n"
             else:
                 return_string += "/trade sell 삼성전자 10 를 입력해주세요.\n"
-                return_string += "(tutorial 탈출 명령어 /quit)\n"
+                return_string += "(튜토리얼 종료 명령어 /quit)\n"
 
 
 
