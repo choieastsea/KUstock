@@ -18,10 +18,10 @@ class Stock(models.Model):
         managed = False
         db_table = 'stock'
 
-
 class Theme(models.Model):
     thid = models.AutoField(primary_key=True)
     code = models.CharField(max_length=50)
+    url = models.CharField(max_length=200)
 
     class Meta:
         managed = False
@@ -50,7 +50,7 @@ class User(models.Model):
     seed = models.IntegerField()
     profit = models.IntegerField()
     status = models.IntegerField()
-    Instruction = models.CharField(default='empty instruction', max_length=100)
+    instruction = models.CharField(default='empty instruction', max_length=100)
 
     class Meta:
         managed = False
