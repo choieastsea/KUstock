@@ -14,6 +14,8 @@ urlpatterns = [
     path('stock',views.stock),   # /stock 명령어 수행
     path('chart',views.chart),   # /chart 명령어 수행
     path('tutorial',views.tutorial), # /tutorial 명령어 수행
+    path('record',views.tradeRecord), # /record 명령어 수행
+    path('quit', views.quit),       # /quit 명령어 수행
     path('check', views.check),  #김혁진 추가 나중에 빼야됨.
     path('dbInit', views.dbInit),  #김혁진 추가 나중에 빼야됨.
     path('stock_recommend', views.stock_recommend)
