@@ -280,7 +280,7 @@ def chart(request):
         return_string = success
 
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string +"\n"})
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
 
 
 def stock(request):
@@ -397,7 +397,8 @@ def stock(request):
                         find_thema=True
                         thema_rate = soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type2 > span")[0].get_text()
                         # print(f"thema_rate : {thema_rate.get_text().strip()}")
-                        ans+=(f"등락률 : {thema_rate}\n주요 종목 : ")
+                        thema_rate = thema_rate.lstrip()
+                        ans+=(f"\n등락률 : {thema_rate}\n주요 종목 : ")
                         linkUrl = 'https://finance.naver.com' + board_date['href']
                         linkResp = requests.get(linkUrl)
                         linkSoup = BeautifulSoup(linkResp.content, "html.parser")   
@@ -438,7 +439,7 @@ def stock(request):
     else:
         return_string = success
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string+"\n"})    
+    return JsonResponse({"status" : "200-OK", "data" : return_string})    
     
 def trade(request):
     """
@@ -503,7 +504,7 @@ def trade(request):
                         code=stock_code)
                     # print(Trade.objects.filter(uid=User))
                     more_stock = user.seed//price
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료.\n 잔고 : {user.seed} 추가{more_stock}주 매수 가능\n"
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매수 완료.\n 잔고 : {user.seed} 추가{more_stock}주 매수 가능.\n"
                 else:
                     user.seed += int(price)*count
                     return_string = f"잔고가 부족하여 거래를 하지 못하였습니다 (현재 잔고: {user.seed})\n"
@@ -559,7 +560,7 @@ def trade(request):
                             code=stock_code)
                     # User.objects.update()
                     print(user.profit)
-                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. 잔고 : {user.seed} 추가 : {more_stock} 매수 가능\n"            
+                    return_string = f"{user.uname}님 {assist.codeToword(stock_code)} 주식 {count} 주 매도 완료. \n잔고 : {user.seed} 추가 : {more_stock} 매수 가능.\n"          
     else:
         return_string = success
     print(return_string)
