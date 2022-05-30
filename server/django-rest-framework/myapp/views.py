@@ -414,10 +414,13 @@ def stock(request):
                 except Exception as e:
                     continue
         if not find_thema:
-            # assist.recommend(assist, theme,5, True)
-            ans+="해당하는 테마를 찾지 못하였습니다.\n"
+            ans+="해당하는 테마를 찾지 못하였습니다.\n 비슷한 테마를 추천해드립니다.\n"
+            similar_themes = assist.recommend(assist, theme, 5 , True)
+            for i in range(len(similar_themes)):
+                # print(similar_themes[i],end=' ')
+                ans+=f'{similar_themes[i]}\t'
+            # print(ans)
             return_string=ans
-        # print(ans)
         # return_string = ans
     elif success == "stock":
         # /stock state <stock> 명령어 <stock>정보는 stock_code 변수에 저장됨
@@ -441,7 +444,7 @@ def stock(request):
     else:
         return_string = success
 
-    return JsonResponse({"status" : "200-OK", "data" : return_string})    
+    return JsonResponse({"status" : "200-OK", "data" : return_string}) 
     
 def trade(request):
     """
