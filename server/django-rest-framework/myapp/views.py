@@ -100,7 +100,14 @@ def tutorial(request):
             if msg == "/chart 삼성전자":
                 user.status = 2
                 user.save()
-
+                return_string += "삼성전자\n"
+                return_string += "20xx.xx.27 66500원 (-0.91%)\n"
+                return_string += "20xx.xx.26 65900원 (0.75%)\n"
+                return_string += "20xx.xx.25 66400원 (0.16%)\n"
+                return_string += "20xx.xx.24 66500원 (2.06%)\n"
+                return_string += "20xx.xx.23 67900원 (0.15%)\n"
+                return_string += "20xx.xx.20 68000원 (-0.74%)\n"
+                return_string += "20xx.xx.19 67500원 (0.88%)\n"
                 return_string += "이제 /trade buy 삼성전자 10 을 입력해서 삼성전자 주식을 10개 구매해보세요.\n"
             else:
                 return_string += "/chart 삼성전자를 입력해주세요.\n"
@@ -109,8 +116,8 @@ def tutorial(request):
             if msg == "/trade buy 삼성전자 10":
                 user.status = 3
                 user.save()
-
-                return_string += "삼성전자 10개를 구매했습니다. /community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
+                return_string += uname+""
+                return_string += "삼성전자 10개를 구매했습니다.\n/community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
             else:
                 return_string += "/trade buy 삼성전자 10 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
@@ -196,7 +203,7 @@ def chart(request):
 
 
         for i in range(7):
-            dif = round((result[1][i] - result[1][i+1])/(result[1][i+1]) * 100, 2)
+            dif = round((result[1][i+1] - result[1][i])/(result[1][i+1]) * 100, 2)
             return_string+= f"{result[0][i]}  {result[1][i]}원 ({dif}%)\n" 
 
     elif success == "inform":
