@@ -146,6 +146,7 @@ def tutorial(request):
                 return_string += uname+"님 삼성전자 주식 10주 매도 완료.\n"
                 return_string += "잔고 : 50030000\n추가:751 매수 가능\n"
                 return_string += "삼성전자 10개를 판매를 완료했습니다.\n"
+                return_string += "tutorial이 끝났습니다.\n"
             else:
                 return_string += "/trade sell 삼성전자 10 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
