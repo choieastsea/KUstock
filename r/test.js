@@ -9,7 +9,8 @@ var map = new Map([
   ["/stock",true],
   ["/chart",true],
   ["/kustock",true],
-  ["/tutorial",true]
+  ["/tutorial",true],
+  ["/record", true]
 ]);
 
 /**
