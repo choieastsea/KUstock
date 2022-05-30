@@ -30,4 +30,5 @@ def getStockPrice_croll(code):
     html = res.content
     soup = BeautifulSoup(html, 'html.parser')
     tr = soup.select('div > p.no_today > em> span.blind')
-    return tr[0].text
+    in_str = int(tr[0].text.replace(",", ""))
+    return in_str
