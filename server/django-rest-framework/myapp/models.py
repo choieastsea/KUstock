@@ -11,7 +11,7 @@ from django.db import models
 # migration( models.py -> db) : https://tibetsandfox.tistory.com/24
 
 class Stock(models.Model):
-    code = models.CharField(max_length=7)
+    code = models.CharField(max_length=7, primary_key=True)
     sname = models.CharField(max_length=50)
 
     class Meta:
