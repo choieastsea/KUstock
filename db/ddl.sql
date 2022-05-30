@@ -88,3 +88,19 @@ ALTER TABLE alarm
    REFERENCES user ( -- user
    uid -- uid
    );
+
+-- theme
+CREATE TABLE theme (
+   thid INTEGER NOT NULL,
+   code VARCHAR(50) NOT NULL
+);
+
+-- theme
+ALTER TABLE theme
+   ADD CONSTRAINT PK_theme -- theme 기본키
+   PRIMARY KEY (
+   thid -- thid
+   );
+
+ALTER TABLE theme
+   MODIFY COLUMN thid INTEGER NOT NULL AUTO_INCREMENT;
