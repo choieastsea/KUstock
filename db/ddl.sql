@@ -8,7 +8,8 @@ CREATE TABLE user (
    uname VARCHAR(50) NOT NULL,
    seed INTEGER NOT NULL,
    profit INTEGER NOT NULL,
-   status INTEGER NOT NULL
+   status INTEGER NOT NULL,
+   instruction VARCHAR(100) DEFAULT 'empty instruction'
 );
 
 -- user

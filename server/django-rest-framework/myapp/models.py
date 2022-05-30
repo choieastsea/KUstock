@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from dis import Instruction
 from django.db import models
 # 초기화 참고: https://hyun-am-coding.tistory.com/entry/Django%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9B%B9-API-%EB%A7%8C%EB%93%A4%EA%B8%B0
 # migration( models.py -> db) : https://tibetsandfox.tistory.com/24
@@ -49,6 +50,7 @@ class User(models.Model):
     seed = models.IntegerField()
     profit = models.IntegerField()
     status = models.IntegerField()
+    Instruction = models.CharField(default='empty instruction', max_length=100)
 
     class Meta:
         managed = False
