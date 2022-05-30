@@ -804,17 +804,18 @@ def tradeRecord(request) :
     print("success:"+ success+", req_uname:"+req_uname)
     
     trades = Trade.objects.all()
+    if success == "user":
+        success = f"{uname} 님의 거래내역입니다. \n"
+        for trade in trades:
+            if(trade.uid.uname == req_uname) :
+                stock = assist.codeToword(trade.code)
+                buysell = ""
+                if(trade.buysell == "TRUE"):
+                    buysell = "매수"
+                else:
+                    buysell = "매도"
+                success += f"{trade.date} {stock}\t {buysell} {trade.price}원 {trade.count}주 \n"
     
-    success = f"{uname} 님의 거래내역입니다. \n"
-    for trade in trades:
-        if(trade.uid.uname == uname) :
-            stock = assist.codeToword(trade.code)
-            buysell = ""
-            if(trade.buysell == "TRUE"):
-                buysell = "매수"
-            else:
-                buysell = "매도"
-            success += f"{trade.date} {stock}\t {buysell} {trade.price}원 {trade.count}주 \n"
 
     return_string = success
     print(return_string)
