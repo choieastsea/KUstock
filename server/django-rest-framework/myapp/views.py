@@ -196,7 +196,7 @@ def chart(request):
 
 
         for i in range(7):
-            dif = round((result[1][i+1] - result[1][i])/(result[1][i+1]) * 100, 2)
+            dif = round((result[1][i] - result[1][i+1])/(result[1][i+1]) * 100, 2)
             return_string+= f"{result[0][i]}  {result[1][i]}원 ({dif}%)\n" 
 
     elif success == "inform":
