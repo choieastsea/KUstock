@@ -93,7 +93,8 @@ ALTER TABLE alarm
 -- theme
 CREATE TABLE theme (
    thid INTEGER NOT NULL,
-   code VARCHAR(50) NOT NULL
+   code VARCHAR(50) NOT NULL,
+   url VARCHAR(200)
 );
 
 -- theme
