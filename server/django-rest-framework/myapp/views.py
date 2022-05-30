@@ -18,11 +18,12 @@ from myapp.assist import assist
 from myapp.models import Trade
 from myapp.api import getStockPrice
 from myapp.models import Stock
+from myapp.models import Theme
 
 def stock_recommend(request):
     # stock_name = request.GET('name')
-    stock_name = "hdc현대"
-    return_str = assist.recommend(assist,stock_name, 5)
+    stock_name = "2차전지"
+    return_str = assist.recommend(assist,stock_name, 5, True)
     print(return_str)
     return JsonResponse({
         "data" : return_str
@@ -353,6 +354,7 @@ def stock(request):
                 except Exception as e:
                     continue
         if not find_thema:
+            # assist.recommend(assist, theme,5, True)
             ans+="해당하는 테마를 찾지 못하였습니다.\n"
             return_string=ans
         # print(ans)
@@ -686,11 +688,32 @@ def help(request):
             })
 
 def dbInit(request):
-    creon =Creon()
-    lst = creon.getCode()
+    # creon =Creon()
+    # lst = creon.getCode()
+    # Stock.objects.all().delete()
+    # for i,j in lst:
+    #     Stock.objects.create(code=i,sname=j)
+    # 테마정보 -> thema
+    themes=[]
+    for pagenum in range(1,8):
+        theme_url = "https://finance.naver.com/sise/theme.nhn?field=name&ordering=asc&page={pagenum}".format(pagenum=pagenum)
+        resp = requests.get(theme_url)
+        soup = BeautifulSoup(resp.content, "html.parser")
+        thema_num = 0
+        print(soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type1"))
+        while thema_num < 50:
+            try:
+                thema_num += 1
+                board_date = soup.select("#contentarea_left > table.type_1.theme > tr:nth-child("+str(thema_num)+") > td.col_type1 > a")[0]
+                thema = board_date.text.strip()
+                themes.append(thema)
+                # print(thema,end="  ")
+            except Exception as e:
+                continue
     Stock.objects.all().delete()
-    for i,j in lst:
-        Stock.objects.create(code=i,sname=j)
+    for i in range(len(themes)):
+        Theme.objects.create(code= themes[i])
+        print(themes[i],end=" ")
     return JsonResponse({"status" : "200-ok"})
 
 def tradeRecord(request) :

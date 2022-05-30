@@ -1,26 +1,33 @@
 from myapp.models import Stock
 from myapp.models import User
+from myapp.models import Theme
 from jamo import h2j, j2hcj
 # myapp::views.py에 필요한 함수에 대한 파일
 class assist:
-
-    def recommend(self, ustock:str, n:int):
+        
+    def recommend(self, ustock:str, n:int, isTheme = False):
         """
         해당 종목이 없는 경우, 유사한 주식명 추천하기 위해 사용하는 함수
-        parm : {ustock : 사용자의 잘못된 종목명 문자열, n: 출력 종목 수}
+        parm : {ustock : 사용자의 잘못된 종목명/테마명 문자열, n: 출력 종목 수, isTheme : theme 추천 기능}
         return : 이와 가장 유사한 n개의 문자열
         (levenshtein 함수, jamo의 h2j 함수를 이용함)
         """
-        print(f"<<assist::recommend>> : parm: {ustock}, {n}")
+        print(f"<<assist::recommend>> : parm: {ustock}, {n}, {isTheme}")
         # 1. 한글 분해하여 1차원 배열로 저장
         ustock = ustock.strip()
         ustock_mod = self.decompKor(ustock)
         print(ustock_mod)
         # 2. 입력 문자열과 다른 종목명들의 레벤슈타인 거리 계산
-        stocks = Stock.objects.all().values("sname")
+        if isTheme:
+            stocks = Theme.objects.all().values("code")    # 테마 정보를 받아옴
+        else:    
+            stocks = Stock.objects.all().values("sname")
         edit_distance_dict = {}
         for i in range(len(stocks)):
-            dstock = stocks[i]['sname'] #db에 있는 종목명 정보
+            if isTheme:
+                dstock = stocks[i]['code']
+            else:
+                dstock = stocks[i]['sname'] #db에 있는 종목명 정보
             dstock_mod = self.decompKor(dstock) 
             # print(f"{stocks[i]['sname']}")
             edit_distance = self.levenshtein(ustock_mod, dstock_mod)
@@ -47,7 +54,10 @@ class assist:
         return_list = []
         edit_distance_list = list(edit_distance_dict.keys())
         for i in range(n):
-            return_list.append(stocks[edit_distance_list[i]]['sname'])
+            if isTheme:
+                return_list.append(stocks[edit_distance_list[i]]['code'])
+            else:
+                return_list.append(stocks[edit_distance_list[i]]['sname'])
         return return_list
 
     def decompKor(word:str):
