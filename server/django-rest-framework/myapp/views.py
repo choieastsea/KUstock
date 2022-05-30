@@ -116,8 +116,9 @@ def tutorial(request):
             if msg == "/trade buy 삼성전자 10":
                 user.status = 3
                 user.save()
-                return_string += uname+""
-                return_string += "삼성전자 10개를 구매했습니다.\n/community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
+                return_string += uname+"님 삼성전자 주식 10주 매수 완료.\n"
+                return_string += "잔고 : 49341000  추가748주 매수 가능\n"
+                return_string += "삼성전자 10개를 구매를 완료했습니다.\n/community "+uname+" 을 입력해 구매한 주식을 확인해보세요.\n"
             else:
                 return_string += "/trade buy 삼성전자 10 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
@@ -125,7 +126,12 @@ def tutorial(request):
             if msg == ("/community "+uname):
                 user.status = 4
                 user.save()
-
+                return_string += uname+"님의 자산 정보 입니다.\n"
+                return_string += "모의 자산 잔액 : 49341000 \n"
+                return_string += "수익금 : 0\n"
+                return_string += "(종목명/손익(수익률)/현재가/보유수량)\n"
+                return_string += "============================\n"
+                return_string += "(삼성전자/3000.0(4%)/69500원/10개)\n"
                 return_string += "/community <user> 명령어를 통해서 자금, 수익금, 보유주식등의 정보를 확인할수있습니다.\n"
                 return_string += "주식 정보를 확인하는동안 삼성전자 가격이 올랐습니다!\n"
                 return_string += "/trade sell 삼성전자 10 를 통해서 구매했던 주식을 판매해보세요.\n"
@@ -134,10 +140,11 @@ def tutorial(request):
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
         if user.status == 4:
             if msg == "/trade sell 삼성전자 10":
-                user.status = 5
+                user.status = 0
                 user.save()
-                
-                return_string += "삼성전자 10개를 판매했습니다.\n"
+                return_string += uname+"님 삼성전자 주식 10주 매도 완료.\n"
+                return_string += "잔고 : 50030000\n추가:751 매수 가능\n"
+                return_string += "삼성전자 10개를 판매를 완료했습니다.\n"
             else:
                 return_string += "/trade sell 삼성전자 10 를 입력해주세요.\n"
                 return_string += "(tutorial 탈출 명령어 /quit)\n"
@@ -716,12 +723,6 @@ def help(request):
                 "chart &lt;stock&gt; foreign : 외국인의 순매매량 출력\n"+
                 "ex) /chart 삼성전자 => 삼성전자 주식의 차트 출력\n"+
                 " /chart 삼성전자 inform => 삼성전자 주식의 가격,거래량,등락률 출력\n"
-            })
-        elif req_str[1] == "alarm":
-            return JsonResponse({
-                "data" : "alarm &lt;stock&gt; &lt;time&gt; : \"time\"으로 입력된 시각에 \"stock\"에 해당하는 주식정보 알림\n"+
-                "Alarm on : 알람 on\n"+
-                "Alarm off : 알람 off\n"
             })
         elif req_str[1] == "kustock":
             return JsonResponse({
