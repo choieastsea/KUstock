@@ -299,10 +299,10 @@ class assist:
                         success = "사용자가 존재하지않습니다.\n"
                         req_uname = ""
                 else:
-                    success = "/record trade <user> 형태로 입력되었는지 확인해주세요.\n"
+                    success = "/record trade &lt;user&gt; 형태로 입력되었는지 확인해주세요.\n"
             else:
-                success = "/record trade <user> 형태로 입력되었는지 확인해주세요.\n"
+                success = "/record trade &lt;user&gt; 형태로 입력되었는지 확인해주세요.\n"
         else:
-            success = "/record trade <user> 형태로 입력되었는지 확인해주세요.\n"
+            success = "/record trade &lt;user&gt; 형태로 입력되었는지 확인해주세요.\n"
             
         return [success, req_uname]
