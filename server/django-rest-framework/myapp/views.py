@@ -20,6 +20,37 @@ from myapp.api import getStockPrice
 from myapp.models import Stock
 from myapp.models import Theme
 
+def easy(request):
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    check = request.GET['msg'].split(" ")
+    msg = request.GET['msg']
+    user = User.objects.filter(uname=uname,gid=uroom)
+    return_string = ""
+
+    
+
+    if user.count() != 1:
+        return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
+    else:
+        user = user.first()
+        if user.instruction == "empty instruction":
+            user.instruction = "/"
+            return_string += "실행할 명령어를 선택해주세요.\n"
+            return_string += "/0 => quit\n"
+            return_string += "/1 => trade\n"
+            return_string += "/2 => community\n"
+            return_string += "/3 => chart\n"
+            return_string += "/4 => "
+        else:
+            return_string += ""
+
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
+
+
+
+
+
 def stock_recommend(request):
     # stock_name = request.GET('name')
     stock_name = "2차전지"
