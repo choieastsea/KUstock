@@ -304,6 +304,7 @@ def processing(request):
         return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
     else:
         user = user.first()
+        # trade buy
         if msg.split(" ")[0] == "/tb":
             tmp = user.instruction
             user.instruction = "/trade buy"+msg.split("/tb")[1]
@@ -314,7 +315,150 @@ def processing(request):
             user.instruction = tmp
             user.save()
             return return_value
-        # easy 관련은 마지막으로 -> instruction으로 if문을 체크하기때문에 숏컷 if문을 들어갈수없음
+        # trade sell
+        elif msg.split(" ")[0] == "/ts":
+            tmp = user.instruction
+            user.instruction = "/trade sell"+msg.split("/ts")[1]
+            user.status = -2
+            user.save()
+            return_value = trade(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # community rank
+        elif msg.split(" ")[0] == "/cr":
+            tmp = user.instruction
+            user.instruction = "/community rank"
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # community <user>
+        elif msg.split(" ")[0] == "/cu":
+            tmp = user.instruction
+            user.instruction = "/community"+msg.split("/cu")[1]
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # chart <stock>
+        elif msg.split(" ")[0] == "/cs":
+            tmp = user.instruction
+            user.instruction = "/chart"+msg.split("/cs")[1]
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # chart <stock> inform
+        elif msg.split(" ")[0] == "/ci":
+            tmp = user.instruction
+            user.instruction = "/chart"+msg.split("/ci")[1]+" inform"
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # chart <stock> institutional
+        elif msg.split(" ")[0] == "/ct":
+            tmp = user.instruction
+            user.instruction = "/chart"+msg.split("/ct")[1]+" institutional"
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # chart <stock> foreign
+        elif msg.split(" ")[0] == "/cf":
+            tmp = user.instruction
+            user.instruction = "/chart"+msg.split("/cf")[1]+" foreign"
+            user.status = -2
+            user.save()
+            return_value = community(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # stock top deal
+        elif msg.split(" ")[0] == "/std":
+            tmp = user.instruction
+            user.instruction = "/stock top deal"
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # stock top sum
+        elif msg.split(" ")[0] == "/sts":
+            tmp = user.instruction
+            user.instruction = "/stock top sum"
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # stock top rise
+        elif msg.split(" ")[0] == "/str":
+            tmp = user.instruction
+            user.instruction = "/stock top rise"
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # stock theme <theme>
+        elif msg.split(" ")[0] == "/sth":
+            tmp = user.instruction
+            user.instruction = "/stock theme"+msg.split("/sth")[1]
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # stock state <state>
+        elif msg.split(" ")[0] == "/sst":
+            tmp = user.instruction
+            user.instruction = "/stock state"+msg.split("/sst")[1]
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # record trade <user>
+        elif msg.split(" ")[0] == "/rt":
+            tmp = user.instruction
+            user.instruction = "/record trade"+msg.split("/rt")[1]
+            user.status = -2
+            user.save()
+            return_value = stock(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+         # easy 관련은 마지막으로 -> instruction으로 if문을 체크하기때문에 숏컷 if문을 들어갈수없음
         elif user.instruction != "empty instruction":
             return_value = easy(request)
             return return_value
@@ -1046,9 +1190,9 @@ def help(request):
     else:
         if req_str[1] == "trade":
             return JsonResponse({
-                "data" : "trade buy &lt;stock&gt; &lt;count&gt; : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매수 요청\n"+
-                "trade buy &lt;stock&gt; &lt;count&gt; : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매도 요청\n"+
-                "ex) /trade buy 삼성전자 10 => 삼성전자 주식 10개 구매\n /trade sell 삼성전자 10 => 삼성전자 주식 10개 판매\n"
+                "data" : "trade buy &lt;stock&gt; &lt;count&gt; (tb &lt;stock&gt; &lt;count&gt;) : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매수 요청\n"+
+                "trade buy &lt;stock&gt; &lt;count&gt; (ts &lt;stock&gt; &lt;count&gt;) : \"stock\"에 해당하는 주식을 현재가로 \"count\"만큼 매도 요청\n"+
+                "ex) /trade buy 삼성전자 10 => 삼성전자 주식 10개 구매\n /ts 삼성전자 10 => 삼성전자 주식 10개 판매\n"
             })
         elif req_str[1] == "community":
             return JsonResponse({
