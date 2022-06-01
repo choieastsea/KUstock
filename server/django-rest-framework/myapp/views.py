@@ -23,12 +23,9 @@ from myapp.models import Theme
 def easy(request):
     uname = request.GET["id"]
     uroom = request.GET["room"]
-    check = request.GET['msg'].split(" ")
     msg = request.GET['msg']
     user = User.objects.filter(uname=uname,gid=uroom)
     return_string = ""
-
-    
 
     if user.count() != 1:
         return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
@@ -41,10 +38,86 @@ def easy(request):
             return_string += "/1 => trade\n"
             return_string += "/2 => community\n"
             return_string += "/3 => chart\n"
-            return_string += "/4 => "
+            return_string += "/4 => stock\n"
+            return_string += "/5 => record\n"
         else:
-            return_string += ""
+            if msg == "/0":
+                return_string = "/easy 를 종료합니다.\n"
+                user.instruction = "empty instruction"
+            if user.instruction == "/":
+                if msg == "/1":
+                    user.instruction = "/trade"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => buy\n"
+                    return_string += "/2 => sell\n"
+                elif msg == "/2":
+                    user.instruction = "/community"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => rank\n"
+                    return_string += "/2 => &lt;user&gt;\n"
+                elif msg == "/3":
+                    user.instruction = "/chart"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => &lt;stock&gt;\n"
+                    return_string += "/2 => &lt;user&gt; inform\n"
+                    return_string += "/3 => &lt;user&gt; institutional\n"
+                    return_string += "/4 => &lt;user&gt; foreign\n"
+                elif msg == "/4":
+                    user.instruction = "/stock"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => top deal\n"
+                    return_string += "/2 => top sum\n"
+                    return_string += "/3 => top rise\n"
+                    return_string += "/4 => theme &lt;theme&gt;\n"
+                    return_string += "/5 => state &lt;stock&gt;\n"
+                elif msg == "/5":
+                    user.instruction = "/record"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n추가할 명령어를 선택해주세요.\n"    
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => &lt;user&gt;\n"
+                else:
+                    return_string += "/0 ~ /5 사이로 입력해주세요.\n"
+                    return_string += "실행할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => trade\n"
+                    return_string += "/2 => community\n"
+                    return_string += "/3 => chart\n"
+                    return_string += "/4 => stock\n"
+                    return_string += "/5 => record\n"
+            if user.instruction == "/trade":
+                if msg == "/1":
+                    user.instruction = "/trade buy"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n구매할 주식명과 수량을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt; &lt;count&gt;\n"
+                elif msg == "/2":
+                    user.instruction = "/trade sell"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n판매할 주식명과 수량을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt; &lt;count&gt;\n"
+                else:
+                    return_string += "/0 ~ /2 사이로 입력해주세요.\n"
+                    return_string += "실행할 명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => buy\n"
+                    return_string += "/2 => sell\n"
+            if user.instruction == "/trade buy":
+                user.instruction = "/trade buy "+msg["1"]
+                
 
+
+    user.save()
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
 
@@ -268,7 +341,7 @@ def chart(request):
         print(return_string)
 
     elif success == "institutional":
-        # /chart <stock> inform 명령어
+        # /chart <stock> institutional 명령어
         sell_lst = []
         buy_lst = []
         url = "https://finance.naver.com/item/frgn.naver?code=" +str(stock_code[1:])
@@ -296,10 +369,10 @@ def chart(request):
             return_string+=f"{sell_lst[i][0]}({sell_lst[i][1]}) "
         print(return_string)
     elif success == "individual":
-        # /chart <stock> inform 명령어
+        # /chart <stock> individual 명령어
         return_string = "개인 매매량은 지원해주지 않습니다.\n"
     elif success == "foreign":
-        # /chart <stock> inform 명령어
+        # /chart <stock> foreign 명령어
         url = "https://finance.naver.com/item/frgn.naver?code=" +str(stock_code[1:])
         headers = {'User-agent': 'Mozilla/5.0'}
         res = requests.get(url, headers=headers)
