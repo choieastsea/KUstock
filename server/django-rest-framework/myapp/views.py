@@ -26,11 +26,14 @@ def easy(request):
     msg = request.GET['msg']
     user = User.objects.filter(uname=uname,gid=uroom)
     return_string = ""
+    
+    print(request)
 
     if user.count() != 1:
         return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
     else:
         user = user.first()
+        # easy 시작
         if user.instruction == "empty instruction":
             user.instruction = "/"
             return_string += "실행할 명령어를 선택해주세요.\n"
@@ -44,46 +47,47 @@ def easy(request):
             if msg == "/0":
                 return_string = "/easy 를 종료합니다.\n"
                 user.instruction = "empty instruction"
+            # 명령어 선택
             if user.instruction == "/":
                 if msg == "/1":
                     user.instruction = "/trade"
                     return_string += "현재 명령어 - "+user.instruction
-                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "\n명령어를 선택해주세요.\n"
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => buy\n"
-                    return_string += "/2 => sell\n"
+                    return_string += "/1 => /trade buy &lt;stock&gt; &lt;count&gt;\n"
+                    return_string += "/2 => /trade sell &lt;stock&gt; &lt;count&gt;\n"
                 elif msg == "/2":
                     user.instruction = "/community"
                     return_string += "현재 명령어 - "+user.instruction
-                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "\n명령어를 선택해주세요.\n"
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => rank\n"
-                    return_string += "/2 => &lt;user&gt;\n"
+                    return_string += "/1 => /community rank\n"
+                    return_string += "/2 => /community &lt;user&gt;\n"
                 elif msg == "/3":
                     user.instruction = "/chart"
                     return_string += "현재 명령어 - "+user.instruction
-                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "\n명령어를 선택해주세요.\n"
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => &lt;stock&gt;\n"
-                    return_string += "/2 => &lt;user&gt; inform\n"
-                    return_string += "/3 => &lt;user&gt; institutional\n"
-                    return_string += "/4 => &lt;user&gt; foreign\n"
+                    return_string += "/1 => /chart &lt;stock&gt;\n"
+                    return_string += "/2 => /chart &lt;user&gt; inform\n"
+                    return_string += "/3 => /chart &lt;user&gt; institutional\n"
+                    return_string += "/4 => /chart &lt;user&gt; foreign\n"
                 elif msg == "/4":
                     user.instruction = "/stock"
                     return_string += "현재 명령어 - "+user.instruction
-                    return_string += "\n추가할 명령어를 선택해주세요.\n"
+                    return_string += "\n명령어를 선택해주세요.\n"
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => top deal\n"
-                    return_string += "/2 => top sum\n"
-                    return_string += "/3 => top rise\n"
-                    return_string += "/4 => theme &lt;theme&gt;\n"
-                    return_string += "/5 => state &lt;stock&gt;\n"
+                    return_string += "/1 => /stock top deal\n"
+                    return_string += "/2 => /stock top sum\n"
+                    return_string += "/3 => /stock top rise\n"
+                    return_string += "/4 => /stock theme &lt;theme&gt;\n"
+                    return_string += "/5 => /stock state &lt;stock&gt;\n"
                 elif msg == "/5":
                     user.instruction = "/record"
                     return_string += "현재 명령어 - "+user.instruction
-                    return_string += "\n추가할 명령어를 선택해주세요.\n"    
+                    return_string += "\n 명령어를 선택해주세요.\n"    
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => &lt;user&gt;\n"
+                    return_string += "/1 => /record &lt;user&gt;\n"
                 else:
                     return_string += "/0 ~ /5 사이로 입력해주세요.\n"
                     return_string += "실행할 명령어를 선택해주세요.\n"
@@ -93,34 +97,231 @@ def easy(request):
                     return_string += "/3 => chart\n"
                     return_string += "/4 => stock\n"
                     return_string += "/5 => record\n"
-            if user.instruction == "/trade":
+            # trade 명령어 완성
+            elif user.instruction == "/trade":
                 if msg == "/1":
-                    user.instruction = "/trade buy"
+                    user.instruction = "/trade buy &lt;stock&gt; &lt;count&gt;"
                     return_string += "현재 명령어 - "+user.instruction
                     return_string += "\n구매할 주식명과 수량을 입력해주세요.\n"
                     return_string += "/0 => quit\n"
                     return_string += "/&lt;stock&gt; &lt;count&gt;\n"
                 elif msg == "/2":
-                    user.instruction = "/trade sell"
+                    user.instruction = "/trade sell &lt;stock&gt; &lt;count&gt;"
                     return_string += "현재 명령어 - "+user.instruction
                     return_string += "\n판매할 주식명과 수량을 입력해주세요.\n"
                     return_string += "/0 => quit\n"
                     return_string += "/&lt;stock&gt; &lt;count&gt;\n"
                 else:
                     return_string += "/0 ~ /2 사이로 입력해주세요.\n"
-                    return_string += "실행할 명령어를 선택해주세요.\n"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n명령어를 선택해주세요.\n"
                     return_string += "/0 => quit\n"
-                    return_string += "/1 => buy\n"
-                    return_string += "/2 => sell\n"
-            if user.instruction == "/trade buy":
-                user.instruction = "/trade buy "+msg["1"]
-                
-
+                    return_string += "/1 => /trade buy &lt;stock&gt; &lt;count&gt;\n"
+                    return_string += "/2 => /trade sell &lt;stock&gt; &lt;count&gt;\n"
+            elif user.instruction == "/trade buy &lt;stock&gt; &lt;count&gt;":
+                user.instruction = "/trade buy "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = trade(request)
+                return return_value
+            elif user.instruction == "/trade sell &lt;stock&gt; &lt;count&gt;":
+                user.instruction = "/trade sell "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = trade(request)
+                return return_value
+            # community 명령어 완성
+            elif user.instruction == "/community":
+                if msg == "/1":
+                    user.instruction = "/community rank"
+                    user.status = -1
+                    user.save()
+                    return_value = community(request)
+                    return return_value
+                elif msg == "/2":
+                    user.instruction = "/community &lt;user&gt;"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 사용자 이름을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;user&gt;\n"
+                else:
+                    return_string += "/0 ~ /2 사이로 입력해주세요.\n"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => /community rank\n"
+                    return_string += "/2 => /community &lt;user&gt;\n"
+            elif user.instruction == "/community &lt;user&gt;":
+                user.instruction = "/community "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = community(request)
+                return return_value
+            # chart 명령어 완성
+            elif user.instruction == "/chart":
+                if msg == "/1":
+                    user.instruction = "/chart &lt;stock&gt;"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 주식명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt;\n"
+                elif msg == "/2":
+                    user.instruction = "/chart &lt;stock&gt; inform"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 주식명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt;\n"
+                elif msg == "/3":
+                    user.instruction = "/chart &lt;stock&gt; institutional"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 주식명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt;\n"
+                elif msg == "/4":
+                    user.instruction = "/chart &lt;stock&gt; foreign"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 주식명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt;\n"
+                else:
+                    return_string += "/0 ~ /4 사이로 입력해주세요.\n"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => /chart &lt;stock&gt;\n"
+                    return_string += "/2 => /chart &lt;user&gt; inform\n"
+                    return_string += "/3 => /chart &lt;user&gt; institutional\n"
+                    return_string += "/4 => /chart &lt;user&gt; foreign\n"
+            elif user.instruction == "/chart &lt;stock&gt;":
+                user.instruction = "/chart "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = community(request)
+                return return_value
+            elif user.instruction == "/chart &lt;stock&gt; inform":
+                user.instruction = "/chart "+msg.split("/")[1]+" inform"
+                user.status = -1
+                user.save()
+                return_value = community(request)
+                return return_value
+            elif user.instruction == "/chart &lt;stock&gt; institutional":
+                user.instruction = "/chart "+msg.split("/")[1]+" institutional"
+                user.status = -1
+                user.save()
+                return_value = community(request)
+                return return_value
+            elif user.instruction == "/chart &lt;stock&gt; foreign":
+                user.instruction = "/chart "+msg.split("/")[1]+" foreign"
+                user.status = -1
+                user.save()
+                return_value = community(request)
+                return return_value
+            # stock 명령어 완성
+            elif user.instruction == "/stock":
+                if msg == "/1":
+                    user.instruction = "/stock top deal"
+                    user.status = -1
+                    user.save()
+                    return_value = stock(request)
+                    return return_value
+                elif msg == "/2":
+                    user.instruction = "/stock top sum"
+                    user.status = -1
+                    user.save()
+                    return_value = stock(request)
+                    return return_value
+                elif msg == "/3":
+                    user.instruction = "/stock top rise"
+                    user.status = -1
+                    user.save()
+                    return_value = stock(request)
+                    return return_value
+                elif msg == "/4":
+                    user.instruction = "/stock theme &lt;theme&gt;"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 테마명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;theme&gt;\n"
+                elif msg == "/5":
+                    user.instruction = "/stock state &lt;stock&gt;"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 주식명을 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;stock&gt;\n"
+                else:
+                    return_string += "/0 ~ /5 사이로 입력해주세요.\n"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => /stock top deal\n"
+                    return_string += "/2 => /stock top sum\n"
+                    return_string += "/3 => /stock top rise\n"
+                    return_string += "/4 => /stock theme &lt;theme&gt;\n"
+                    return_string += "/5 => /stock state &lt;stock&gt;\n"
+            elif user.instruction == "/stock theme &lt;theme&gt;":
+                user.instruction = "/stock theme "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = stock(request)
+                return return_value
+            elif user.instruction == "/stock state &lt;stock&gt;":
+                user.instruction = "/stock state "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = stock(request)
+                return return_value
+            # record 완성
+            elif user.instruction == "/record":
+                if msg == "/1":
+                    user.instruction = "/record trade &lt;user&gt;"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n검색할 사용자를 입력해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/&lt;user&gt;\n"
+                else:
+                    return_string += "/0 ~ /1 사이로 입력해주세요.\n"
+                    return_string += "현재 명령어 - "+user.instruction
+                    return_string += "\n명령어를 선택해주세요.\n"
+                    return_string += "/0 => quit\n"
+                    return_string += "/1 => /record trade &lt;user&gt;\n"
+            elif user.instruction == "/record trade &lt;user&gt;":
+                user.instruction = "/record trade "+msg.split("/")[1]
+                user.status = -1
+                user.save()
+                return_value = tradeRecord(request)
+                return return_value
 
     user.save()
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
+def processing(request):
+    uname = request.GET["id"]
+    uroom = request.GET["room"]
+    msg = request.GET['msg']
+    user = User.objects.filter(uname=uname,gid=uroom)
+    return_string = ""
+    if user.count() != 1:
+        return_string = f"{uname}에 해당하는 사용자가 없습니다.\n/kustock 명령어를 통해서 사용자 정보를 생성해주세요.\n"
+    else:
+        user = user.first()
+        if msg.split(" ")[0] == "/tb":
+            tmp = user.instruction
+            user.instruction = "/trade buy"+msg.split("/tb")[1]
+            user.status = -2
+            user.save()
+            return_value = trade(request)
+            user.status = 0
+            user.instruction = tmp
+            user.save()
+            return return_value
+        # easy 관련은 마지막으로 -> instruction으로 if문을 체크하기때문에 숏컷 if문을 들어갈수없음
+        elif user.instruction != "empty instruction":
+            return_value = easy(request)
+            return return_value
+        else:
+            return_string += "NOTFOUND"
 
+    return JsonResponse({"status" : "200-OK", "data" : return_string})
 
 
 
@@ -141,7 +342,8 @@ def check(request):
             })
 
 def test(request):
-    print(request.META)
+    print(request)
+    #print(request.META)
     print("room : " + parse.unquote(request.GET['room']))
     print("sender : " + parse.unquote(request.GET['id']))
     print("msg : " + parse.unquote(request.GET['msg']))
@@ -259,6 +461,8 @@ def tutorial(request):
 
     return JsonResponse({"status" : "200-OK", "data" : return_string})
 
+
+
 def quit(request):
     msg = request.GET["msg"].split(" ")
     uname = request.GET["id"]
@@ -284,15 +488,25 @@ def chart(request):
     # tutorial 기능을 위한 메세지 컷
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    msg = request.GET['msg']
     user = User.objects.filter(uname=uname,gid=uroom)
     if user.count() == 1:
         user = user.first()
         if user.status >= 1:
             return_value = tutorial(request)
             return return_value
+        if user.status == -1:
+            user.status = 0
+            msg = user.instruction
+            user.instruction = "empty instruction"
+            user.save()
+        if user.status == -2:
+            user.status = 0
+            msg = user.instruction
+            user.save()
 
     # msg에서 명령어 파싱
-    [success, stock_code] = assist.parseChart(request.GET['msg'])
+    [success, stock_code] = assist.parseChart(msg)
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code))
     
@@ -393,15 +607,23 @@ def stock(request):
     # tutorial
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    msg = request.GET['msg']
     user = User.objects.filter(uname=uname,gid=uroom)
     if user.count() == 1:
         user = user.first()
         if user.status >= 1:
             return_value = tutorial(request)
             return return_value
+        if user.status == -1:
+            user.status = 0
+            msg = user.instruction
+            user.instruction = "empty instruction"
+            user.save()
+        if user.status == -2:
+            msg = user.instruction
 
     # msg에서 명령어 파싱
-    [success, stock_code, theme] = assist.parseStock(assist, request.GET['msg'])
+    [success, stock_code, theme] = assist.parseStock(assist, msg)
     # 파싱 테스트
     print("success:"+ success+", stock_code : "+str(stock_code)+", theme:"+ str(theme))
     return_string = ""
@@ -567,6 +789,7 @@ def trade(request):
     # room, id 인자 획득
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    msg = request.GET['msg']
     # tutorial
     user = User.objects.filter(uname=uname,gid=uroom)
     if user.count() == 1:
@@ -574,9 +797,17 @@ def trade(request):
         if user.status >= 1:
             return_value = tutorial(request)
             return return_value
+        if user.status == -1:
+            user.status = 0
+            msg = user.instruction
+            user.instruction = "empty instruction"
+            user.save()
+        if user.status == -2:
+            msg = user.instruction
 
+    print(msg)
     # msg에서 명령어 파싱
-    [success, stock_code, count] = assist.parseTrade(assist, request.GET['msg'])
+    [success, stock_code, count] = assist.parseTrade(assist, msg)
     # [success, stock_code, count] = ["buy","000020",2]
     # 파싱 테이스
     print("success:"+ success+", stock_code : "+str(stock_code)+", count:"+ str(count))
@@ -680,6 +911,7 @@ def community(request):
     # room, id 인자 획득
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    msg = request.GET['msg']
     # tutorial
     user = User.objects.filter(uname=uname,gid=uroom)
     if user.count() == 1:
@@ -687,7 +919,18 @@ def community(request):
         if user.status >= 1:
             return_value = tutorial(request)
             return return_value
-    [success, req_uname] = assist.parseCommunity(request.GET['msg'],uroom)
+        if user.status == -1:
+            user.status = 0
+            msg = user.instruction
+            user.instruction = "empty instruction"
+            user.save()
+        if user.status == -2:
+            user.status = 0
+            msg = user.instruction
+            user.save()
+
+
+    [success, req_uname] = assist.parseCommunity(msg,uroom)
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)
@@ -897,6 +1140,7 @@ def tradeRecord(request) :
     """
     uname = request.GET["id"]
     uroom = request.GET["room"]
+    msg = request.GET['msg']
     # tutorial
     user = User.objects.filter(uname=uname,gid=uroom)
     if user.count() == 1:
@@ -904,7 +1148,15 @@ def tradeRecord(request) :
         if user.status >= 1:
             return_value = tutorial(request)
             return return_value
-    [success, req_uname] = assist.parseRecord(request.GET['msg'],uroom)
+        if user.status == -1:
+            user.status = 0
+            msg = user.instruction
+            user.instruction = "empty instruction"
+            user.save()
+        if user.status == -2:
+            msg = user.instruction
+    print(msg)
+    [success, req_uname] = assist.parseRecord(msg,uroom)
 
     # 파싱 테스트
     print("success:"+ success+", req_uname:"+req_uname)

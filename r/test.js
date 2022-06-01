@@ -10,7 +10,8 @@ var map = new Map([
   ["/chart",true],
   ["/kustock",true],
   ["/tutorial",true],
-  ["/record", true]
+  ["/record", true],
+  ["/easy", true]
 ]);
 
 /**
@@ -34,15 +35,23 @@ function response(
   var check = msg.trim()[0];
   if(check=="/"){
     var order = msg.split(" ")[0];
+    var url = "https://a15d-222-109-202-99.jp.ngrok.io";
     if(map.get(order)){
-      var url = "https://4063-222-109-202-99.jp.ngrok.io";
       var connect = Jsoup.connect(url+"/api"+order+"?room="+room+"&id="+sender+"&msg="+msg)
       var str = JSON.parse(connect.ignoreContentType(true).get().text()).data;
       var rpy_msg = sender+"님의 명령어 \""+msg+"\" 실행결과 입니다.\n\n"
       rpy_msg += str.substring(0,str.length-1);
       replier.reply(rpy_msg);
     }else{
-      replier.reply("등록되지않은 명령어입니다.\n /help를 통해 명령어를 확인해주세요.");
+      var connect = Jsoup.connect(url+"/api/processing?room="+room+"&id="+sender+"&msg="+msg)
+      var str = JSON.parse(connect.ignoreContentType(true).get().text()).data;
+      if(str == "NOTFOUND")
+        replier.reply("등록되지않은 명령어입니다.\n /help를 통해 명령어를 확인해주세요.");
+      else{
+        var rpy_msg = sender+"님의 명령어 \""+msg+"\" 실행결과 입니다.\n\n"
+        rpy_msg += str.substring(0,str.length-1);
+        replier.reply(rpy_msg);
+      }
     }
   }
 }
