@@ -1182,7 +1182,7 @@ def help(request):
             "community : 사용자 랭킹 및 자산정보관련 명령어입니다.\n\n"+
             "stock : 주식관련 정보를 요청하는 명령어입니다.\n\n"+
             "chart : 주식의 차트를 요청하는 명령어입니다.\n\n"+
-            "alarm : 지정한 시각에 알림을 설정하는 명령어입니다.\n\n"+
+            "easy : 자주 쓰는 명령어를 쉽게 쓰고 단축키로 쉽게 다른 명령어를 수행할 수 있게 도와주는 명령어입니다.\n\n"+
             "상세한 명령어의 정보가 필요하시면 아래와 같이 help 명령어를 입력해주세요.\n\n"+
             "help &lt;function/term&gt; : 'function'의 명령어의 상세 사용법을 출력합니다."+
             "'term'의 용어가 해당하는 의미/사용가능한 문자열을 출력합니다.\n"
@@ -1247,6 +1247,11 @@ def help(request):
         elif req_str[1] == "time":
             return JsonResponse({
                 "data" : "시간을 뜻합니다. 입력할 때, xx:xx (x는 0~9의 자연수)의 형태로 입력하며, 24시간제 형태로 입력합니다.\n"
+            })
+        elif req_str[1] == "easy":
+            return JsonResponse({
+                "data" : "trade, community, chart, stock, record에 대한 명령어를 /와 정수를 입력해서 쉽게 실행할 수 있습니다.\n"+
+                "quit은 easy모드에서만 사용할 수 있고 easy모드를 종료할 수 있는 명령어입니다.\n"
             })
 
 def dbInit(request):
