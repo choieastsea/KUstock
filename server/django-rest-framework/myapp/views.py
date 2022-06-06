@@ -17,6 +17,7 @@ from myapp.models import User
 from myapp.assist import assist
 from myapp.models import Trade
 from myapp.api import getStockPrice
+from myapp.api import getStockPriceTest
 from myapp.models import Stock
 from myapp.models import Theme
 
@@ -484,8 +485,9 @@ def stock_recommend(request):
         "data" : return_str
     })
 def check(request):
-    creon = Creon()
-    it = creon.getCurPrice("A005930")
+    #creon = Creon()
+    #it = creon.getCurPrice("A005930")
+    it = getStockPrice("A005930")
     return JsonResponse({
                "status" : "200-OK",
                "data": it 
@@ -493,7 +495,7 @@ def check(request):
 
 def test(request):
     print(request)
-    #print(request.META)
+    #print(request.META)c
     print("room : " + parse.unquote(request.GET['room']))
     print("sender : " + parse.unquote(request.GET['id']))
     print("msg : " + parse.unquote(request.GET['msg']))
