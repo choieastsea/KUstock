@@ -20,6 +20,7 @@ urlpatterns = [
     path('processing', views.processing),   # 
     path('check', views.check),  #김혁진 추가 나중에 빼야됨.
     path('dbInit', views.dbInit),  #김혁진 추가 나중에 빼야됨.
-    path('stock_recommend', views.stock_recommend)
+    path('stock_recommend', views.stock_recommend),
+    path('get_price',views.testPrice)
 ]
 
